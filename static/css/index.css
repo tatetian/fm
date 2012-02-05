@@ -160,7 +160,7 @@ body {
   line-height: 1.5;
 }
 body {
-    background: url(images/rise-bg-gradient.png) repeat-x top center,url(images/rise-bg.png) repeat top center;
+    background: url(../images/rise-bg-gradient.png) repeat-x top center,url(../images/rise-bg.png) repeat top center;
     color: #5A5050;
     font-family: Helvetica,Arial;
 /*    text-align: center;*/
@@ -209,16 +209,16 @@ li.slide.secondary {
     left: 100%;
 }
 .tag {
-    background: url(images/tag-w.png) no-repeat left center;
+    background: url(../images/tag-w.png) no-repeat left center;
     font-family: Helvetica,Arial;
     font-style: italic;
     padding-left: 1.2em;
 }
 .tag.all {
-    background: url(images/box-w.png) no-repeat left center;
+    background: url(../images/box-w.png) no-repeat left center;
 }
 .tag.recent {
-    background: url(images/time-w.png) no-repeat left center;
+    background: url(../images/time-w.png) no-repeat left center;
 }
 em {
     font-family: ClarendonFSBold,Georgia,sans-serif;
@@ -234,7 +234,7 @@ em {
 }
 #loadbar {
     /**background-color: #5A5050;**/
-    background: url(images/bg-tile-dark.png) repeat center top;
+    background: url(../images/bg-tile-dark.png) repeat center top;
     height: 8px;
     width: 100%;
 }
@@ -283,7 +283,7 @@ em {
     color: white;
 }
 #top-panel > .wrapper { /* for some reason, the radius */
-    background: url(images/bg-tile-dark.png) repeat center top;
+    background: url(../images/bg-tile-dark.png) repeat center top;
     border-bottom-left-radius: 1em 1em;
     border-bottom-right-radius: 1em 1em;
     width: 100%;
@@ -337,52 +337,52 @@ em {
     float: left;
 }
 #top-panel .button.plus-icon {
-    background: url(images/plus_22w.png) no-repeat center center;
+    background: url(../images/plus_22w.png) no-repeat center center;
 }
 #top-panel .button.edit-icon {
-    background: url(images/edit_22w.png) no-repeat center center;
+    background: url(../images/edit_22w.png) no-repeat center center;
 }
 #top-panel .button.help-icon{
-    background: url(images/help_22w.png) no-repeat center center;
+    background: url(../images/help_22w.png) no-repeat center center;
 }
 #top-panel .button.search-icon{
-    background: url(images/search_22w.png) no-repeat center center;
+    background: url(../images/search_22w.png) no-repeat center center;
 }
 #top-panel .button.user-icon{
-    background: url(images/user_22w.png) no-repeat center center;
+    background: url(../images/user_22w.png) no-repeat center center;
 }
 #top-panel .button.ok-icon{
-    background: url(images/ok_22w.png) no-repeat center center;
+    background: url(../images/ok_22w.png) no-repeat center center;
 }
 #top-panel .button.setting-icon{
-    background: url(images/setting_22w.png) no-repeat center center;
+    background: url(../images/setting_22w.png) no-repeat center center;
 }
 #top-panel .button.more-icon{
-    background: url(images/more_22w.png) no-repeat center center;
+    background: url(../images/more_22w.png) no-repeat center center;
 }
 #top-panel .button.fav-icon{
-    background: url(images/star_22w.png) no-repeat center 0.5em;
+    background: url(../images/star_22w.png) no-repeat center 0.5em;
 }
 #top-panel .button.a2z-icon{
-    background: url(images/a2z_22w.png) no-repeat center 0.5em;
+    background: url(../images/a2z_22w.png) no-repeat center 0.5em;
 }
 #top-panel .button.rows-icon{
-    background: url(images/rows_22w.png) no-repeat center 0.5em;
+    background: url(../images/rows_22w.png) no-repeat center 0.5em;
 }
 #result .button.read-icon {
-    background: url(images/read.png) no-repeat center center;
+    background: url(../images/read.png) no-repeat center center;
 }
 #result .button.heart-hollow-icon {
-    background: url(images/heart-hollow.png) no-repeat center center;
+    background: url(../images/heart-hollow.png) no-repeat center center;
 }
 #result .button.heart-solid-icon {
-    background: url(images/heart-solid.png) no-repeat center center;
+    background: url(../images/heart-solid.png) no-repeat center center;
 }
 #result .button.arrow-right-icon {
-    background: url(images/arrow-right.png) no-repeat center center;
+    background: url(../images/arrow-right.png) no-repeat center center;
 }
 #top-panel .button.arrow-left-icon {
-    background: url(images/arrow-left.png) no-repeat center center;
+    background: url(../images/arrow-left.png) no-repeat center center;
 }
 #top-panel .entries {
     border-top: 1px solid #B1AEAE;
@@ -397,7 +397,7 @@ em {
 #top-panel .tag {
 }
 #top-panel .entry:hover {
-    background: url(images/bg-tile-dark-hover.png) repeat center top; 
+    background: url(../images/bg-tile-dark-hover.png) repeat center top; 
     color: #6EB3D1; 
 }
 #top-panel .entry h2 span {
@@ -408,7 +408,7 @@ em {
     border-top: 1px solid #B1AEAE;
     height: 3em;
     width: 100%;
-    background: url(images/bg-tile-dark.png) repeat center top; 
+    background: url(../images/bg-tile-dark.png) repeat center top; 
 
 }
 #top-panel .bottombar li{
@@ -432,7 +432,7 @@ em {
 }
 .nip-large {
     height: 0.625em;
-    background: url(images/large-nip.png) no-repeat center;
+    background: url(../images/large-nip.png) no-repeat center;
 }
 #current-tag {
     position: absolute;
@@ -458,7 +458,7 @@ em {
     width: 3.2em;
     height: 1.2em;
     margin: 0.7em auto 0.5em;
-    background: white url(images/search_tiny_g.png) no-repeat 0.5em center;
+    background: white url(../images/search_tiny_g.png) no-repeat 0.5em center;
     border: none;
     display: block;
     padding: 0.2em 2em 0.2em;
@@ -495,7 +495,7 @@ em {
     height: 4em;
     width: 2.75em;
     margin-top: -2em;
-    background: url(images/arrow_lr.png) no-repeat center center;
+    background: url(../images/arrow_lr.png) no-repeat center center;
     display: none;
 }
 #message:hover > .buttons {
@@ -530,13 +530,13 @@ em {
 .sub-result > h4 > span{
     z-index: 50;
     padding: 0 1em 0.1em;
-    background: url(images/bg-tile-dark.png) repeat center top;
+    background: url(../images/bg-tile-dark.png) repeat center top;
     border-bottom-left-radius: 0.5em 0.5em;
     border-bottom-right-radius: 0.5em 0.5em;
     position: relative;
 }
 .sub-result > h4 > span > span.nip {
-    background: url(images/nips.png) no-repeat center top;
+    background: url(../images/nips.png) no-repeat center top;
     position: absolute;
     width: 100%;
     height: 0.5em;        /* 6px = 0.5 * 12 = 0.5em */
@@ -555,7 +555,7 @@ em {
     border-bottom: none;
 }
 .sub-result:not(.end):not(.more) .entry:hover {
-    background: url(images/bg-tile-light.png) repeat center top;
+    background: url(../images/bg-tile-light.png) repeat center top;
 /*    border-bottom-left-radius: 0.8em 0.8em;
     border-bottom-right-radius: 0.8em 0.8em;*/
     /*border-top: 1px solid #B1AEAE;
@@ -577,7 +577,7 @@ em {
     width: 2.75em;
     display: none;
     z-index: 50;
-    background: url(images/bg-tile-blue.png) repeat center top;
+    background: url(../images/bg-tile-blue.png) repeat center top;
 /*    border-top-right-radius: 1em 1em;
     border-bottom-right-radius: 1em 1em;*/
 }
@@ -589,21 +589,21 @@ em {
     color: #B1AEAE;
 }
 .sub-result .entry span.tag {
-    background: url(images/tag-small-light.png) no-repeat;
+    background: url(../images/tag-small-light.png) no-repeat;
     margin-right: 1em;
 }
 @font-face{
     font-family: 'ClarendonFSLight';
-    src: url('fonts/clarendonfs-light.eot?#iefix') format('embedded-opentype'),
+    src: url('../fonts/clarendonfs-light.eot?#iefix') format('embedded-opentype'),
 /*         url('/fonts/clarendonfs-light.woff') format('woff'),*/
-         url('fonts/clarendonfs-light.ttf') format('truetype')/*,
+         url('../fonts/clarendonfs-light.ttf') format('truetype')/*,
          url('/fonts/clarendonfs-light.svg#webfontI7XVJ1Zh') format('svg')*/
 }
 @font-face{
     font-family: 'ClarendonFSBold';
-    src: url('fonts/clarendonfs-bold.eot?#iefix') format('embedded-opentype'),
+    src: url('../fonts/clarendonfs-bold.eot?#iefix') format('embedded-opentype'),
 /*         url('/fonts/clarendonfs-bold.woff') format('woff'),*/
-         url('fonts/clarendonfs-bold.ttf') format('truetype')/*,
+         url('../fonts/clarendonfs-bold.ttf') format('truetype')/*,
          url('/fonts/clarendonfs-bold.svg#webfontI7XVJ1Zh') format('svg')*/
 }
 /*
