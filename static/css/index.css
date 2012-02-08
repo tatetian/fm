@@ -183,10 +183,7 @@ h4 {
 p {
     font-size: 1em;
     font-family: ClarendonFSLight,Georgia,sans-serif;
-}
-#main .secondary.slide p{
-    margin: 1em 0 1.5em;
-    padding-left: 0.125em;
+    text-align: justify;
 }
 ul.tabs {
     overflow: hidden;
@@ -217,10 +214,16 @@ li.slide.secondary {
     background: url(../images/tag-w.png) no-repeat left center;
     font-family: Helvetica,Arial;
     font-style: italic;
-    padding-left: 1.2em;
+    padding-left: 1.45em;
 }
 .category {
     font-family: Helvetica,Arial;
+    padding-left: 1.45em;
+}
+.title .tag {
+    padding-left: 1.2em;   
+}
+.title .category {
     padding-left: 1.2em;
 }
 .category.all {
@@ -231,6 +234,17 @@ li.slide.secondary {
 }
 em {
     font-family: ClarendonFSBold,Georgia,sans-serif;
+}
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 75;   
+    background-color: black;
+    opacity: 0;
 }
 .button {
     width: 2.75em;
@@ -345,9 +359,6 @@ em {
     height: 2em;
     margin: -0.7em 0 0;
 }
-#topbar .button {
-    float: left;
-}
 #top-panel .button.plus-icon {
     background: url(../images/plus_22w.png) no-repeat center center;
 }
@@ -412,9 +423,9 @@ em {
     background: url(../images/bg-tile-dark-hover.png) repeat center top; 
     color: #6EB3D1; 
 }
-#top-panel .entry h2 span {
+#top-panel .entry h3 span {
     float: right;
-    padding-right: 0.66666666666em;
+    padding-right: 0.5em;
 }
 #top-panel .bottombar {
     border-top: 1px solid #B1AEAE;
@@ -467,19 +478,30 @@ em {
     cursor: pointer;
 }
 #search {
-    width: 3.2em;
-    height: 1.2em;
-    margin: 0.7em auto 0.5em;
-    background: white url(../images/search_tiny_g.png) no-repeat 0.5em center;
-    border: none;
-    display: block;
-    padding: 0.2em 2em 0.2em;
-    border-radius: 1em 1em;
-    line-height: 1;
-    color: #5A5050;
+    position: absolute;
+    left: 0.75em;
+    top: 0.75em;
+    background: url(../images/search_tiny_g.png) no-repeat 10px 6px #777;
+    border: 0 none;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    width: 4em;
+    padding: 6px 15px 6px 35px;
+    -webkit-border-radius: 28px;
+    -moz-border-radius: 28px;
+    border-radius: 28px;
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    -webkit-transition: all 0.4s ease 0s;
+    -moz-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
 }
 #search:focus {
     outline: 0;
+    width: 200px;
 }
 #message {
     border-top: 1px solid #B1AEAE;
@@ -623,7 +645,7 @@ div.paper-cover {
     width: 275px;
     background: transparent url(../images/download.png);
     padding: 0 0 8px;
-    margin: 0.5em auto;
+    margin: 0em auto 1em;
 }
 img.paper-cover {
     border: 0;
@@ -632,6 +654,32 @@ img.paper-cover {
     box-shadow: 0 0 2px #999;
 /*    box-shadow: rgba(0, 0, 0, 0.597656) 0.125em 0.25em 0.6em 0px*//*, rgba(0, 0, 0, 0.398438) 0px 0px 0.6em 0px*/;
 /*    -webkit-box-reflect: below 4px -webkit-gradient(linear, 0% 0%, 0% 100%, from(transparent), color-stop(0.5, transparent), to(rgba(255, 255, 255, .8))) 0 0 0 0 stretch stretch;*/
+}
+.entry-details p {
+    margin: 1em 0 1.5em;
+}
+.entry-details > .wrapper {
+    margin: 0 auto;
+    padding: 0 0.25em;
+}
+/* Drop cap effect from http://safalra.com/web-design/typography/css-drop-caps/*/
+.first-letter{
+  display      : block;
+  float        : left;
+  margin-top   : -0.32em; /* use -0.205em for two lines */
+  margin-left  : -0.1em;
+  margin-right : 0.5em;
+  height       : 4.5em;
+  font-family: ClarendonFSBold,Georgia,sans-serif;
+
+}
+.first-letter span{
+  font-size    : 5.3em;   /* use 3.33em for two lines */
+  line-height  : 1.0em;
+}
+
+.first-letter + span{
+  margin-left  : -0.5em;
 }
 @font-face{
     font-family: 'ClarendonFSLight';

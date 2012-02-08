@@ -1,11 +1,26 @@
 var fm = {
     is_topbar_expanded: false,
     is_slide_primary: true,
+    last_scroll_top: 0,
+    scrollOwner: $.browser.msie || $.browser.mozilla || $.browser.opera ? "html" : "body",
     toggleTopbar: function(e) {
+        fm.toggleOverlay();
         $("#top-panel > .wrapper > .main").slideToggle();
         $("#search").toggle();
         $("#topbar .tab .button").toggle();
         e.stopPropagation(); 
+    },
+    toggleOverlay: function(e) {
+        $o = $("#overlay");
+        if($o.css("display") === "none") {
+            $o.show();
+            $o.animate({"opacity": 0.8}); 
+        }
+        else 
+            $o.animate({"opacity": 0}, function() {$o.hide();}); 
+    },
+    scrollTo: function(pos) {
+        $(fm.scrollOwner).animate({"scrollTop": pos});
     },
     onWindowResize: function(e) {
         if (fm.is_slide_primary)
@@ -19,6 +34,7 @@ $(document).ready(function() {
     // Open/close top-panel
     $("#topbar .slide.primary .title").click(fm.toggleTopbar);
     $("#top-panel .entries .entry").click(fm.toggleTopbar);
+    $("#overlay").click(fm.toggleTopbar);
     // Expand search bar
     $("#search").focus(function(e){
         $("#search").animate({"width":"8em"}, "fast");
@@ -27,8 +43,9 @@ $(document).ready(function() {
     $("#main .entry li.button.arrow-right-icon").click(function(e) {
         if(fm.is_slide_primary) {
             fm.is_slide_primary = false;
-            $(".slide.primary").animate({"left":"-100%"});
-            $(".slide.secondary").animate({"left":"0%"});
+            fm.last_scroll_top = $(window).scrollTop();
+            $(".slide").animate({"left":"-=100%"});
+            fm.scrollTo(0);
             $("#top-panel .main .tab.primary").hide();
             $("#top-panel .bottombar").hide();
             $("#top-panel .main .tab.secondary").show();
@@ -38,11 +55,11 @@ $(document).ready(function() {
     $("#topbar .slide.secondary .button.arrow-left-icon").click(function(e) {
         if(!fm.is_slide_primary) {
             fm.is_slide_primary = true;
-            $(".slide.primary").animate({"left":"0%"});
-            $(".slide.secondary").animate({"left":"100%"});
+            $(".slide").animate({"left":"+=100%"});
             $("#top-panel .main .tab.primary").show();
             $("#top-panel .bottombar").show();
             $("#top-panel .main .tab.secondary").hide();
+            fm.scrollTo(fm.last_scroll_top);
             fm.onWindowResize();
         } 
     }); 
