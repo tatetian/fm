@@ -285,7 +285,6 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             articleEnd = lineSeparator;
         }
         startDocument(document);
-
         if( document.isEncrypted() )
         {
             // We are expecting non-encrypted documents here, but it is common
@@ -389,7 +388,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             charactersByArticle.setSize( numberOfArticleSections );
             for( int i=0; i<numberOfArticleSections; i++ )
             {
-                if( numberOfArticleSections < originalSize )
+                if( i < originalSize )
                 {
                     ((List<TextPosition>)charactersByArticle.get( i )).clear();
                 }
@@ -499,9 +498,8 @@ public class SmartPDFTextStripper extends PDFStreamEngine
 
         boolean startOfPage = true;//flag to indicate start of page
         boolean startOfArticle = true;
-        if(charactersByArticle.size() > 0) { 
-            writePageStart();
-        }
+         
+        writePageStart();
 
         for( int i = 0; i < charactersByArticle.size(); i++)
         {

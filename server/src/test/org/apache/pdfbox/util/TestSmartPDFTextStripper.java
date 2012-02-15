@@ -34,10 +34,11 @@ public class TestSmartPDFTextStripper extends TestCase{
     }
 
     public void testPrint() throws IOException {
-    	String fileName = "src/test/resources/input/a.pdf";
+    	String fileName = "src/test/resources/input/a1.pdf";
     	File inFile = new File(fileName);
     	PDDocument doc = PDDocument.load(inFile);
     	OutputStreamWriter writer = new OutputStreamWriter(System.out);
     	stripper.writeText(doc, writer);
+    	writer.flush();
     }
 }
