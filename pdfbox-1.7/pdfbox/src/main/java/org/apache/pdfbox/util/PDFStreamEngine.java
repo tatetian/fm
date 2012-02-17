@@ -42,7 +42,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 
 import org.apache.pdfbox.pdmodel.common.PDMatrix;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.font.PDType3Font;
 
 import org.apache.pdfbox.pdmodel.graphics.PDExtendedGraphicsState;
@@ -491,24 +493,55 @@ public class PDFStreamEngine
             totalCharCnt++;
 
             float totalVerticalDisplacementDisp = maxVerticalDisplacementText * fontSizeText * textXctm.getYScale();
-
             // process the decoded text
-            processTextPosition(
-                    new TextPosition(
-                            pageRotation,
-                            pageWidth,
-                            pageHeight,
-                            textMatrixStart,
-                            endXPosition,
-                            endYPosition,
-                            totalVerticalDisplacementDisp,
-                            widthText,
-                            spaceWidthDisp,
-                            c,
-                            font,
-                            fontSizeText,
-                            (int)(fontSizeText * textMatrix.getXScale())
-                            ));
+            TextPosition text = new TextPosition(
+                    pageRotation,
+                    pageWidth,
+                    pageHeight,
+                    textMatrixStart,
+                    endXPosition,
+                    endYPosition,
+                    totalVerticalDisplacementDisp,
+                    widthText,
+                    spaceWidthDisp,
+                    c,
+                    font,
+                    fontSizeText,
+                    (int)(fontSizeText * textMatrix.getXScale())
+                    ) ;
+            // Added by Hongliang Tian
+            PDRectangle boundingBox = null;
+            PDFontDescriptor desp = null;
+            try {	// try to get the bounding box
+            	boundingBox = font.getFontBoundingBox();
+            } 
+            catch(IOException e) {
+            	desp = font.getFontDescriptor();
+            	if (desp != null)
+            		boundingBox = desp.getFontBoundingBox();
+            }
+            catch(RuntimeException e) {
+            	desp = font.getFontDescriptor();
+            	if (desp != null)
+            		boundingBox = desp.getFontBoundingBox();
+            }
+            float yFactor = fontSizeText * textXctm.getYScale() * fontMatrixYScaling;
+            float bottom = 0f, top = 0f;
+            if (boundingBox != null) {
+            	bottom = boundingBox.getLowerLeftY() * yFactor;
+                top = boundingBox.getUpperRightY() * yFactor;
+            }
+            if (bottom == 0f && top == 0f) {
+            	desp = font.getFontDescriptor(); 
+            	if (desp != null) {
+		        	bottom = desp.getDescent() * yFactor;
+		        	top = desp.getAscent() * yFactor;
+            	}
+            }
+            if (top != 0f && bottom != 0f)
+            	text.setTopAndBottom(top, bottom);
+            
+            processTextPosition(text);
         }
     }
 

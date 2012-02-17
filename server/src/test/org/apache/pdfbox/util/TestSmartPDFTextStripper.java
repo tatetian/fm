@@ -30,7 +30,9 @@ public class TestSmartPDFTextStripper extends TestCase{
     {
         super( name );
         stripper = new SmartPDFTextStripper(encoding);
-        stripper.setLineSeparator("\n");
+        stripper.setSortByPosition(false);
+//        stripper.setLineSeparator("\n");
+//        stripper.setParagraphStart("\n\n\n");
     }
 
     public void testPrint() throws IOException {

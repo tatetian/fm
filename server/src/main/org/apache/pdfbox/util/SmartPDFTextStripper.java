@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.pdfbox.util;
 
 import java.io.IOException;
@@ -43,14 +27,26 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOutlineItem;
 import org.apache.pdfbox.pdmodel.interactive.pagenavigation.PDThreadBead;
 import org.apache.pdfbox.util.TextPosition;
+import org.apache.pdfbox.util.model.PDFDoc;
+import org.apache.pdfbox.util.model.PDFJsonizer;
+import org.apache.pdfbox.util.model.PDFLine;
+import org.apache.pdfbox.util.model.PDFPage;
+import org.apache.pdfbox.util.model.PDFParagraph;
+import org.apache.pdfbox.util.model.PDFWord;
 
 
 /**
- * Based on PDFTextStripper, this class extracts the text out of PDF 
- *  in a structured and sematic format. The output text is organized in 
- *  page, paragraph, line and word. 
+ * This class will take a pdf document and strip out all of the text and ignore the
+ * formatting and such.  Please note; it is up to clients of this class to verify that
+ * a specific user has the correct permissions to extract text from the
+ * PDF document.
+ * 
+ * The basic flow of this process is that we get a document and use a series of 
+ * processXXX() functions that work on smaller and smaller chunks of the page.  
+ * Eventually, we fully process each page and then print it. 
  *
- * @author <a href="mailto:tatetian@gmail.com">Hongliang TIAN</a>
+ * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
+ * @version $Revision: 1.70 $
  */
 public class SmartPDFTextStripper extends PDFStreamEngine
 {
@@ -62,8 +58,8 @@ public class SmartPDFTextStripper extends PDFStreamEngine
 
     //enable the ability to set the default indent/drop thresholds
     //with -D system properties:
-    //    SmartPDFTextStripper.indent
-    //    SmartPDFTextStripper.drop
+    //    pdftextstripper.indent
+    //    pdftextstripper.drop
     static
     {
         String prop = thisClassName+".indent";
@@ -95,6 +91,12 @@ public class SmartPDFTextStripper extends PDFStreamEngine
         }
     }
 
+    private PDFDoc currentDoc = null;
+    private PDFParagraph currentParagraph = null;
+    private PDFPage currentPage = null;
+    private PDFLine currentLine = null;
+    private PDFWord currentWord = null;
+    
     /**
      * The platforms line separator.
      */
@@ -114,7 +116,12 @@ public class SmartPDFTextStripper extends PDFStreamEngine
     private int currentPageNo = 0;
     private int startPage = 1;
     private int endPage = Integer.MAX_VALUE;
+    private PDOutlineItem startBookmark = null;
+    private int startBookmarkPageNumber = -1;
+    private PDOutlineItem endBookmark = null;
+    private int endBookmarkPageNumber = -1;
     private boolean suppressDuplicateOverlappingText = true;
+    private boolean shouldSeparateByBeads = true;
     private boolean sortByPosition = false;
     private boolean addMoreFormatting = false;
     
@@ -285,6 +292,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             articleEnd = lineSeparator;
         }
         startDocument(document);
+
         if( document.isEncrypted() )
         {
             // We are expecting non-encrypted documents here, but it is common
@@ -320,6 +328,28 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void processPages( List<COSObjectable> pages ) throws IOException
     {
+        if( startBookmark != null )
+        {
+            startBookmarkPageNumber = getPageNumber( startBookmark, pages );
+        }
+
+        if( endBookmark != null )
+        {
+            endBookmarkPageNumber = getPageNumber( endBookmark, pages );
+        }
+
+        if( startBookmarkPageNumber == -1 && startBookmark != null &&
+                endBookmarkPageNumber == -1 && endBookmark != null &&
+                startBookmark.getCOSObject() == endBookmark.getCOSObject() )
+        {
+            //this is a special case where both the start and end bookmark
+            //are the same but point to nothing.  In this case
+            //we will not extract any text.
+            startBookmarkPageNumber = 0;
+            endBookmarkPageNumber = 0;
+        }
+
+
         Iterator<COSObjectable> pageIter = pages.iterator();
         while( pageIter.hasNext() )
         {
@@ -354,7 +384,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void startDocument(PDDocument pdf) throws IOException
     {
-        // no default implementation, but available for subclasses
+    	currentDoc = new PDFDoc();
     }
 
     /**
@@ -366,7 +396,8 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void endDocument(PDDocument pdf ) throws IOException
     {
-        // no default implementation, but available for subclasses
+    	PDFJsonizer jsonizer = new PDFJsonizer(output);
+    	currentDoc.accept(jsonizer);
     }
 
     /**
@@ -379,16 +410,22 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void processPage( PDPage page, COSStream content ) throws IOException
     {
-        if( currentPageNo >= startPage && currentPageNo <= endPage )
+        if( currentPageNo >= startPage && currentPageNo <= endPage &&
+                (startBookmarkPageNumber == -1 || currentPageNo >= startBookmarkPageNumber ) &&
+                (endBookmarkPageNumber == -1 || currentPageNo <= endBookmarkPageNumber ))
         {
             startPage( page );
             pageArticles = page.getThreadBeads();
             int numberOfArticleSections = 1 + pageArticles.size() * 2;
+            if( !shouldSeparateByBeads )
+            {
+                numberOfArticleSections = 1;
+            }
             int originalSize = charactersByArticle.size();
             charactersByArticle.setSize( numberOfArticleSections );
             for( int i=0; i<numberOfArticleSections; i++ )
             {
-                if( i < originalSize )
+                if( numberOfArticleSections < originalSize )
                 {
                     ((List<TextPosition>)charactersByArticle.get( i )).clear();
                 }
@@ -455,7 +492,12 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void startPage( PDPage page ) throws IOException
     {
-        //default is to do nothing.
+    	assert(currentPage == null);
+    	currentPage = new PDFPage();
+    	PDRectangle box = page.getMediaBox();
+    	currentPage.setPageHeight(box.getHeight());
+    	currentPage.setPageWidth(box.getWidth());
+    	currentDoc.addPage(currentPage);
     }
 
     /**
@@ -468,7 +510,49 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void endPage( PDPage page ) throws IOException
     {
-        //default is to do nothing
+    	assert(currentPage != null);
+    	currentPage = null;
+    }
+    
+    protected void startParagraph() 
+    {
+    	assert(currentParagraph == null);
+    	currentParagraph = new PDFParagraph();
+    	currentPage.addParagraph(currentParagraph);
+    }
+    
+    protected void endParagraph() {
+    	assert(currentParagraph != null);
+    	currentParagraph.updateBox();
+    	currentParagraph = null;
+    }
+    
+    protected void startLine() {
+    	assert(currentLine == null);
+    	currentLine = new PDFLine();
+    	currentParagraph.addLine(currentLine);
+    }
+    
+    protected void endLine() {
+    	assert(currentLine != null);
+    	currentLine.updateBox();
+    	currentLine = null;
+    }
+    
+    protected void startWord() {
+    	assert(currentWord == null);
+    	currentWord = new PDFWord();
+    	currentLine.addWord(currentWord);
+    }
+    
+    protected void endWord() {
+    	assert(currentWord != null);
+    	currentWord.updateBox();
+    	currentWord = null;
+    }
+    
+    protected void addTextPosition(TextPosition text) {
+    	currentWord.addTextPosition(text);
     }
 
     private static final float ENDOFLASTTEXTX_RESET_VALUE = -1;
@@ -498,8 +582,9 @@ public class SmartPDFTextStripper extends PDFStreamEngine
 
         boolean startOfPage = true;//flag to indicate start of page
         boolean startOfArticle = true;
-         
-        writePageStart();
+        if(charactersByArticle.size() > 0) { 
+            writePageStart();
+        }
 
         for( int i = 0; i < charactersByArticle.size(); i++)
         {
@@ -561,6 +646,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             // we will later use this to skip reordering
             boolean hasRtl = rtlCnt > 0;
 
+            
             /* Now cycle through to print the text.
              * We queue up a line at a time before we print so that we can convert
              * the line from presentation form to logical form (if needed). 
@@ -684,8 +770,11 @@ public class SmartPDFTextStripper extends PDFStreamEngine
                      * of regression test failures.  So, I'm leaving it be for now. */
                     if(!overlap(positionY, positionHeight, maxYForLine, maxHeightForLine))
                     {
-                        writeLine(normalize(line,isRtlDominant,hasRtl),isRtlDominant);
+                    	List<String> normalizedStrings = normalize(line,isRtlDominant,hasRtl);
+                        //writeLine(normalizedStrings,isRtlDominant);
+                        processLine(line, normalizedStrings);
                         line.clear();
+                        
 
                         lastLineStartPosition = handleLineSeparation(current, lastPosition, lastLineStartPosition, maxHeightForLine);
 
@@ -739,7 +828,9 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             // print the final line
             if (line.size() > 0)
             {
-                writeLine(normalize(line,isRtlDominant,hasRtl),isRtlDominant);
+            	List<String> normalizedStrings = normalize(line,isRtlDominant,hasRtl);
+                //writeLine(normalizedStrings,isRtlDominant);
+                processLine(line, normalizedStrings);
                 writeParagraphEnd();
             }
 
@@ -748,6 +839,26 @@ public class SmartPDFTextStripper extends PDFStreamEngine
         writePageEnd();
     }
 
+    private void processLine(List<TextPosition> line, List<String> normalizedStrings) {
+    	startLine();
+        startWord();
+        Iterator<String> normalziedStringIterator = normalizedStrings.iterator();
+        for(TextPosition text: line) {
+        	if(text != WordSeparator.getSeparator())
+        		addTextPosition(text);
+        	else {
+        		if(normalziedStringIterator.hasNext())
+        			currentWord.setNormalizedString(normalziedStringIterator.next());
+        		endWord();
+        		startWord();
+        	}
+        }
+        if(normalziedStringIterator.hasNext())
+        	currentWord.setNormalizedString(normalziedStringIterator.next());
+        endWord();
+    	endLine();
+    }
+    
     private boolean overlap( float y1, float height1, float y2, float height2 )
     {
         return within( y1, y2, .1f) || (y2 <= y1 && y2 >= y1-height1) ||
@@ -775,7 +886,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void writeLineSeparator( ) throws IOException
     {
-        output.write(getLineSeparator());
+        //output.write(getLineSeparator());
     }
 
 
@@ -786,7 +897,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void writeWordSeparator() throws IOException
     {
-        output.write(getWordSeparator());
+        //output.write(getWordSeparator());
     }
 
     /**
@@ -797,7 +908,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      */
     protected void writeCharacters( TextPosition text ) throws IOException
     {
-        output.write( text.getCharacter() );
+        //output.write( text.getCharacter() );
     }
 
     /**
@@ -894,37 +1005,44 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             int notFoundButFirstAboveArticleDivisionIndex = -1;
             float x = text.getX();
             float y = text.getY();
-            for( int i=0; i<pageArticles.size() && foundArticleDivisionIndex == -1; i++ )
+            if( shouldSeparateByBeads )
             {
-                PDThreadBead bead = (PDThreadBead)pageArticles.get( i );
-                if( bead != null )
+                for( int i=0; i<pageArticles.size() && foundArticleDivisionIndex == -1; i++ )
                 {
-                    PDRectangle rect = bead.getRectangle();
-                    if( rect.contains( x, y ) )
+                    PDThreadBead bead = (PDThreadBead)pageArticles.get( i );
+                    if( bead != null )
                     {
-                        foundArticleDivisionIndex = i*2+1;
+                        PDRectangle rect = bead.getRectangle();
+                        if( rect.contains( x, y ) )
+                        {
+                            foundArticleDivisionIndex = i*2+1;
+                        }
+                        else if( (x < rect.getLowerLeftX() ||
+                                y < rect.getUpperRightY()) &&
+                                notFoundButFirstLeftAndAboveArticleDivisionIndex == -1)
+                        {
+                            notFoundButFirstLeftAndAboveArticleDivisionIndex = i*2;
+                        }
+                        else if( x < rect.getLowerLeftX() &&
+                                notFoundButFirstLeftArticleDivisionIndex == -1)
+                        {
+                            notFoundButFirstLeftArticleDivisionIndex = i*2;
+                        }
+                        else if( y < rect.getUpperRightY() &&
+                                notFoundButFirstAboveArticleDivisionIndex == -1)
+                        {
+                            notFoundButFirstAboveArticleDivisionIndex = i*2;
+                        }
                     }
-                    else if( (x < rect.getLowerLeftX() ||
-                            y < rect.getUpperRightY()) &&
-                            notFoundButFirstLeftAndAboveArticleDivisionIndex == -1)
+                    else
                     {
-                        notFoundButFirstLeftAndAboveArticleDivisionIndex = i*2;
-                    }
-                    else if( x < rect.getLowerLeftX() &&
-                            notFoundButFirstLeftArticleDivisionIndex == -1)
-                    {
-                        notFoundButFirstLeftArticleDivisionIndex = i*2;
-                    }
-                    else if( y < rect.getUpperRightY() &&
-                            notFoundButFirstAboveArticleDivisionIndex == -1)
-                    {
-                        notFoundButFirstAboveArticleDivisionIndex = i*2;
+                        foundArticleDivisionIndex = 0;
                     }
                 }
-                else
-                {
-                    foundArticleDivisionIndex = 0;
-                }
+            }
+            else
+            {
+                foundArticleDivisionIndex = 0;
             }
             int articleDivisionIndex = -1;
             if( foundArticleDivisionIndex != -1 )
@@ -1152,6 +1270,66 @@ public class SmartPDFTextStripper extends PDFStreamEngine
             boolean suppressDuplicateOverlappingTextValue)
     {
         this.suppressDuplicateOverlappingText = suppressDuplicateOverlappingTextValue;
+    }
+
+    /**
+     * This will tell if the text stripper should separate by beads.
+     *
+     * @return If the text will be grouped by beads.
+     */
+    public boolean getSeparateByBeads()
+    {
+        return shouldSeparateByBeads;
+    }
+
+    /**
+     * Set if the text stripper should group the text output by a list of beads.  The default value is true!
+     *
+     * @param aShouldSeparateByBeads The new grouping of beads.
+     */
+    public void setShouldSeparateByBeads(boolean aShouldSeparateByBeads)
+    {
+        this.shouldSeparateByBeads = aShouldSeparateByBeads;
+    }
+
+    /**
+     * Get the bookmark where text extraction should end, inclusive.  Default is null.
+     *
+     * @return The ending bookmark.
+     */
+    public PDOutlineItem getEndBookmark()
+    {
+        return endBookmark;
+    }
+
+    /**
+     * Set the bookmark where the text extraction should stop.
+     *
+     * @param aEndBookmark The ending bookmark.
+     */
+    public void setEndBookmark(PDOutlineItem aEndBookmark)
+    {
+        endBookmark = aEndBookmark;
+    }
+
+    /**
+     * Get the bookmark where text extraction should start, inclusive.  Default is null.
+     *
+     * @return The starting bookmark.
+     */
+    public PDOutlineItem getStartBookmark()
+    {
+        return startBookmark;
+    }
+
+    /**
+     * Set the bookmark where text extraction should start, inclusive.
+     *
+     * @param aStartBookmark The starting bookmark.
+     */
+    public void setStartBookmark(PDOutlineItem aStartBookmark)
+    {
+        startBookmark = aStartBookmark;
     }
 
     /**
@@ -1562,7 +1740,8 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      * @throws IOException if something went wrong
      */
     protected void writeParagraphStart() throws IOException{
-        output.write(getParagraphStart());
+        //output.write(getParagraphStart());
+        startParagraph();
     }
 
     /**
@@ -1570,7 +1749,8 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      * @throws IOException if something went wrong
      */
     protected void writeParagraphEnd() throws IOException{
-        output.write(getParagraphEnd());
+        //output.write(getParagraphEnd());
+        endParagraph();
     }
 
     /**
@@ -1578,7 +1758,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      * @throws IOException if something went wrong
      */
     protected void writePageStart()throws IOException{
-        output.write(getPageStart());
+        //output.write(getPageStart());
     }
 
     /**
@@ -1586,7 +1766,7 @@ public class SmartPDFTextStripper extends PDFStreamEngine
      * @throws IOException if something went wrong
      */
     protected void writePageEnd()throws IOException{
-        output.write(getPageEnd());
+        //output.write(getPageEnd());
     }
 
     /**

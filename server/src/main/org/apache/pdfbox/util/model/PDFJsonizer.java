@@ -11,6 +11,8 @@ public class PDFJsonizer implements PDFElementVisitor{
 	private Writer writer;
 	private int indentLevel = 0;
 
+	private PDFPage currentPage = null;
+	
 	private Stack<Boolean> commaFlags = new Stack<Boolean>();
 	
 	public PDFJsonizer(Writer writer) {
@@ -24,28 +26,50 @@ public class PDFJsonizer implements PDFElementVisitor{
 	}
 	
 	
+	private void writeBox(PDFBox box) {
+		writeDictEntry("l", box.getLeft() /*/ currentPage.getPageWidth() * 21.587f*/);
+		writeDictEntry("r", box.getRight() /*/ currentPage.getPageWidth() * 21.587f*/);
+		writeDictEntry("t", box.getTop() /*/ currentPage.getPageHeight() * 27.937f*/);
+		writeDictEntry("b", box.getBottom() /*/ currentPage.getPageHeight() * 27.937f*/);
+	}
+	
 	@Override
 	public void visit(PDFWord word) {
-		writeString("word placeholder");
+		writeString(word.toString());
 	}
 
 	@Override
 	public void visit(PDFLine line) {
 		beginDict();
 
-		writeDictEntry("l", 0.0f);
-		writeDictEntry("r", 0.0f);
-		writeDictEntry("t", 0.0f);
-		writeDictEntry("b", 0.0f);
+		writeBox(line);
 		
 		beginDictEntry("words");
-		beginBigArray();
+		beginTinyArray();
 		for(PDFWord word: line.getWords()) {
 			beginArrayEntry();
 			word.accept(this);
 			endArrayEntry();
 		}
-		endBigArray();
+		endTinyArray();
+		
+		beginDictEntry("xs");
+		beginTinyArray();
+		for(PDFWord word: line.getWords()) {
+			beginArrayEntry();
+			write(word.getLeft());
+			endArrayEntry();
+		}
+		endTinyArray();
+		
+		beginDictEntry("ws");
+		beginTinyArray();
+		for(PDFWord word: line.getWords()) {
+			beginArrayEntry();
+			write(word.getWidth());
+			endArrayEntry();
+		}
+		endTinyArray();
 		
 		endDict();
 	}
@@ -54,10 +78,7 @@ public class PDFJsonizer implements PDFElementVisitor{
 	public void visit(PDFParagraph para) {
 		beginDict();
 		
-		writeDictEntry("l", 0.0f);
-		writeDictEntry("r", 0.0f);
-		writeDictEntry("t", 0.0f);
-		writeDictEntry("b", 0.0f);
+		writeBox(para);
 		
 		beginDictEntry("lines");
 		beginBigArray();
@@ -73,10 +94,12 @@ public class PDFJsonizer implements PDFElementVisitor{
 
 	@Override
 	public void visit(PDFPage page) {
+		currentPage = page;
+		
 		beginDict();
 		
-		writeDictEntry("width", 0.0f);
-		writeDictEntry("height", 0.0f);
+		writeDictEntry("width", page.getPageWidth());
+		writeDictEntry("height", page.getPageHeight());
 		
 		beginDictEntry("paragraphs");
 		beginBigArray();
@@ -88,6 +111,8 @@ public class PDFJsonizer implements PDFElementVisitor{
 		endBigArray();
 		
 		endDict();
+		
+		currentPage = null;
 	}
 	
 	@Override
@@ -109,6 +134,8 @@ public class PDFJsonizer implements PDFElementVisitor{
 		endDict();
 		
 		assert(commaFlags.size() == 0);
+		
+		flush();
 	}
 	
 	private void beginDict()  
@@ -203,6 +230,14 @@ public class PDFJsonizer implements PDFElementVisitor{
 	
 	private void write(float val) {
 		write(""+val);
+	}
+	
+	private void flush() {
+		try {
+			writer.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	private void writeIndent() {

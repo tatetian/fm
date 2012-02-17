@@ -50,6 +50,10 @@ public class TextPosition
     // TODO remove unused value
     private float wordSpacing;  // word spacing value, in display units
 
+    // Added by Hongliang Tian, tatetian@gmail.com
+    private float top = 0;
+    private float bottom = 0;
+    
     /**
      *  Constructor.
      */
@@ -110,6 +114,9 @@ public class TextPosition
         this.fontSize = fontSizeValue;
         this.fontSizePt = fontSizeInPt;
         this.wordSpacing = ws;
+        
+        this.bottom = 0;
+        this.top = this.getHeight();
     }
 
     /**
@@ -206,7 +213,27 @@ public class TextPosition
         this.font = currentFont;
         this.fontSize = fontSizeValue;
         this.fontSizePt = fontSizeInPt;
+        
+        this.bottom = 0;
+        this.top = this.getHeight();
     }
+    
+    /*
+     * Added by Hongliang TIAN
+     * */
+    public float getTop() {
+    	return top;
+    }
+    public float getBottom() {
+    	return bottom;
+    }
+    public void setTopAndBottom(float top, float bottom) {
+    	if (top < bottom)
+    		throw new IllegalArgumentException("Top must be greater than bottom");
+    	this.top = top;
+    	this.bottom = bottom;
+    }
+    
 
     /**
      * Return the string of characters stored in this object.

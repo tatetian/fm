@@ -26,6 +26,11 @@ public abstract class PDFBox {
 		box[3] = bottom;
 	}
 	
+	@Override
+	public String toString() {
+		return "{l="+box[0]+",t="+box[1]+",r="+box[2]+",b="+box[3]+"}";
+	}
+	
 	/*
 	 * Update the bounding box according to latest state
 	 * 
