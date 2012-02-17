@@ -1,10 +1,10 @@
-var fm = {
+var fm = { 
     is_topbar_expanded: false,
     is_slide_primary: true,
     last_scroll_top: 0,
     scrollOwner: $.browser.msie || $.browser.mozilla || $.browser.opera ? "html" : "body",
     toggleTopbar: function(e) {
-        fm.toggleOverlay();
+        //fm.toggleOverlay();
         $("#top-panel > .wrapper > .main").slideToggle();
         $("#search").toggle();
         $("#topbar .tab .button").toggle();
@@ -27,6 +27,37 @@ var fm = {
             $("#main.slider").height($("#main.slider > .slide.primary").height()); 
         else
             $("#main.slider").height($("#main.slider > .slide.secondary").height()+4); 
+    }
+};
+/* Web Services */
+fm.ws = {
+    "docs": {
+        "search": 
+        /* Search relevant docs according to some conditions
+         * @arg tag string
+         * @arg keywords array
+         * @arg sort_key string
+         * @arg from
+         * @arg to 
+         * */
+        function() {
+
+        },
+        "upload": function() {
+        },
+        "delete": function() {},
+        "edit": function() {},
+        "detail": function() {}
+    },
+    "tags": {
+        "list": function() {},
+        "edit": function() {},
+        "add": function() {},
+    },
+    "tag": {
+        "add": function() {},
+        "edit": function() {},
+        "delete": function() {}
     }
 };
 $(document).ready(function() {

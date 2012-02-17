@@ -479,18 +479,19 @@ em {
 }
 #search {
     position: absolute;
-    left: 0.75em;
-    top: 0.75em;
-    background: url(../images/search_tiny_g.png) no-repeat 10px 6px #777;
+    left: 0.5em;
+    top: 0.5em;
+    background: url(../images/search_tiny_g.png) no-repeat 0.5em center #666;
     border: 0 none;
-    font-size: 14px;
+    font-size: 1em;
     font-weight: bold;
     color: white;
-    width: 4em;
-    padding: 6px 15px 6px 35px;
-    -webkit-border-radius: 28px;
-    -moz-border-radius: 28px;
-    border-radius: 28px;
+    width: 0em;
+    padding: 7px 0em 6px 2em;
+    height: 16px;
+    -webkit-border-radius: 1em;
+    -moz-border-radius: 1em;
+    border-radius: 1em;
     -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
     -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
@@ -499,9 +500,13 @@ em {
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
 }
+#search:hover {
+    cursor: pointer;
+}
 #search:focus {
     outline: 0;
-    width: 200px;
+    width: 20em;
+    cursor: auto;
 }
 #message {
     border-top: 1px solid #B1AEAE;
