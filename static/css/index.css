@@ -648,7 +648,7 @@ h4.section-header > span > span.nip {
 }
 div.paper-cover {
     width: 275px;
-    background: transparent url(../images/download.png);
+    background: transparent url(../images/paper-cover-shadow.png);
     padding: 0 0 8px;
     margin: 0em auto 1em;
 }
