@@ -235,17 +235,18 @@ li.slide.secondary {
 em {
     font-family: ClarendonFSBold,Georgia,sans-serif;
 }
-#overlay {
+body > .loading {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    display: none;
-    z-index: 75;   
-    background-color: black;
-    opacity: 0;
+    z-index: 75;
 }
+body > .loading {
+    background: url(../images/loading.gif) no-repeat center center; 
+}
+
 .button {
     width: 2.75em;
     height: 3em; 
@@ -632,20 +633,6 @@ h4.section-header > span > span.nip {
     background: url(../images/tag-small-light.png) no-repeat;
     margin-right: 1em;
 }
-.two-columns {
-    
-}
-.column {
-    margin: 0 0.1em;
-}
-.column.left {
-    float: left;
-    width: 63%;
-}
-.column.right {
-    float: right;
-    width: 30%;
-}
 div.paper-cover {
     width: 275px;
     background: transparent url(../images/paper-cover-shadow.png);
@@ -655,7 +642,7 @@ div.paper-cover {
 img.paper-cover {
     border: 0;
     width: 100%;
-    border: 1px solid darkGray;
+    border: 1px solid #999;
     box-shadow: 0 0 2px #999;
 /*    box-shadow: rgba(0, 0, 0, 0.597656) 0.125em 0.25em 0.6em 0px*//*, rgba(0, 0, 0, 0.398438) 0px 0px 0.6em 0px*/;
 /*    -webkit-box-reflect: below 4px -webkit-gradient(linear, 0% 0%, 0% 100%, from(transparent), color-stop(0.5, transparent), to(rgba(255, 255, 255, .8))) 0 0 0 0 stretch stretch;*/
