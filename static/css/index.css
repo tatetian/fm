@@ -402,8 +402,17 @@ body > .loading {
 .result .button.heart-solid-icon {
     background: url(../images/heart-solid.png) no-repeat center center;
 }
-.result .button.arrow-right-icon {
-    background: url(../images/arrow-right.png) no-repeat center center;
+.entry .button.arrow-right-icon {
+    background: url(../images/arrow-right-d-tiny.png) no-repeat center center;
+}
+.entry .button.arrow-down-icon {
+    background: url(../images/arrow-down-d-tiny.png) no-repeat center center;
+}
+.entry:hover .button.arrow-right-icon {
+    background: url(../images/arrow-right-w-tiny.png) no-repeat center center;
+}
+.entry:hover .button.arrow-down-icon {
+    background: url(../images/arrow-down-w-tiny.png) no-repeat center center;
 }
 #top-panel .button.arrow-left-icon {
     background: url(../images/arrow-left.png) no-repeat center center;
@@ -549,7 +558,7 @@ body > .loading {
 #main {
     
 }
-.sub-result {
+/*.sub-result {
     position: relative;
     width: 100%;
 }
@@ -558,44 +567,47 @@ body > .loading {
 }
 .sub-result.end {
     border-bottom: 4px solid #5A5050;
-}
-h4.section-header{   /* sub result title*/
+}*/
+.result > div.title {   /* group title*/
     border-top: 1px solid #B1AEAE;
     text-align: center;
     text-transform: uppercase;
     color: white;
-    line-height: 1;
-    position: relative;
 }
-h4.section-header > span{
+.result > div.title > h4{
     z-index: 50;
     padding: 0 1em 0.1em;
     background: url(../images/bg-tile-dark.png) repeat center top;
-    border-bottom-left-radius: 0.5em 0.5em;
-    border-bottom-right-radius: 0.5em 0.5em;
+    border-bottom-left-radius: 0.6em 0.6em;
+    border-bottom-right-radius: 0.6em 0.6em;
     position: relative;
+    width: 8em;
+    margin: 0 auto;
+    line-height: 1.2;
 }
-h4.section-header > span > span.nip {
+.result > div.title > h4 > span.nip {
     background: url(../images/nips.png) no-repeat center top;
     position: absolute;
     width: 100%;
     height: 0.5em;        /* 6px = 0.5 * 12 = 0.5em */
     left: 0;
-    top: 1.1em;
-    opacity: 0.96;
+    top: 1.2em;
 }
-.sub-result .entry {    
+.result .entry {    
     line-height: 1.1;
-    border-bottom: 1px dotted #B1AEAE;
+    border-top: 1px dotted #B1AEAE;
     /*min-height: 6em;*/
     padding: 0.61em 0.125em;
     position: relative;
     min-height: 26px;
 }
-.sub-result .entry:last-child {
-    border-bottom: none;
+.result .entry.first {
+    border-top: none;
 }
-.sub-result:not(.end):not(.more) .entry:hover {
+.result .entry:last-child {
+    border-bottom: 2px solid #B1AEAE;
+}
+.result .entry:hover {
     background: url(../images/bg-tile-light.png) repeat center top;
 /*    border-bottom-left-radius: 0.8em 0.8em;
     border-bottom-right-radius: 0.8em 0.8em;*/
@@ -603,36 +615,46 @@ h4.section-header > span > span.nip {
     border-bottom: 1px dotted #5A5050;*/
     color: #6EB3D1; 
 }
-.sub-result .entry .info {
+.result .entry .info {
     margin-right: 3em;
 }
-.sub-result .entry:hover .buttons {
-    display: block;
-}
-.sub-result .entry .buttons {
+.result .entry .buttons {
     position: absolute;
     right: 0;
     top: 0;
     /*margin: -1.5em 0 0 0;*/
     height: 100%;
     width: 2.75em;
-    display: none;
+    /*display: none;*/
     z-index: 50;
-    background: url(../images/bg-tile-blue.png) repeat center top;
 /*    border-top-right-radius: 1em 1em;
     border-bottom-right-radius: 1em 1em;*/
 }
-.sub-result .entry .buttons .button {
+.result .entry:hover .buttons {
+    display: block;
+    background: url(../images/bg-tile-blue.png) repeat center top;
+}
+.result .entry .buttons .button {
     width: 100%;
     height: 100%;
 }
-.sub-result .entry p{
+.result .entry p{
     color: #B1AEAE;
 }
-.sub-result .entry span.tag {
+.result .entry span.tag {
     background: url(../images/tag-small-light.png) no-repeat;
     margin-right: 1em;
 }
+.result .entry.more {
+    cursor: pointer;
+}
+.result .entry.more.loading .info {
+    background: url(../images/small-loading-d.gif) no-repeat center center;
+}
+.result .entry.more.loading:hover .info {
+    background: url(../images/small-loading-b.gif) no-repeat center center;
+}
+
 div.paper-cover {
     width: 275px;
     background: transparent url(../images/paper-cover-shadow.png);
