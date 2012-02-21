@@ -32,7 +32,7 @@ FmManager.prototype.init = function() {
             $("#top-panel .bottombar").show();
             $("#top-panel .main .tab.secondary").hide();*/
             manager.scrollTo(manager.state.lastScrollTop);
-            manager.mainPanel.updateHeight();
+            //manager.mainPanel.updateHeight();
         } 
     });
     this.mainPanel.clickRightBtn(function(e) {
@@ -45,7 +45,7 @@ FmManager.prototype.init = function() {
             $("#top-panel .bottombar").hide();
             $("#top-panel .main .tab.secondary").show();*/
             manager.showLoading();
-            manager.mainPanel.updateHeight(); 
+            //manager.mainPanel.updateHeight(); 
         }
     }); 
     // load data
@@ -104,41 +104,68 @@ function FmTopPanel(manager) {
         expanded: false
     };
     this.elements = {
-        "searchInput": "#search",
-        "mainView": "#top-panel > .wrapper > .main",
-        "topbarBtns": "#topbar .tab .button",
-        "titleLbl": "#topbar .title",
-        "entry": "#top-panel .entries .entry",
-        "leftBtn": "#topbar .slide.secondary .button.arrow-left-icon"
+        me: "#top",
+        mainView: "#top > .wrapper > .main",
+        searchInput: "#search",
+        topbarBtns: "#top .tab .button",
+        titleLbl: "#top .title",
+        entry: "#top .entries .entry",
+        leftBtn: "#top .slide.secondary .button.arrow-left-icon",
+        tabs: "#top .content .tabs",
+        content: "#top .content"
     };
+    // scroller
+    var scrollContainer = $(this.elements.content).get(0);
+    var scrollContent = $(this.elements.tabs).get(0);
+    FmMainPanel.container = scrollContainer;
+    FmMainPanel.content = scrollContent;
+    this.scroller = new FmScroller(scrollContainer, scrollContent);
 }
 FmTopPanel.prototype.init = function() {
     // toggle toppanel
     var topPanel = this;
     function onToggle(e) {
         topPanel.toggle();
-        e.stopPropagation();
+        if(e) e.stopPropagation();
     }
     $(this.elements.titleLbl).click(onToggle);
-    $(this.elements.entry).click(onToggle);
     $("body").click(function(e) {
         if(topPanel.state.expanded)
-            topPanel.onToggle();
+            onToggle();
     });
     // animate search bar
     $(this.elements.searchInput).focus(function(e){
         $(this).animate({"width":"8em"}, "fast");
         e.stopPropagation();
     });
+    // resize
+    $(window).resize(function() {
+        topPanel.updateHeight();
+    });
+    this.updateHeight();
 }
 FmTopPanel.prototype.toggle = function() {
     $(this.elements.mainView).slideToggle();
+    $(this.elements.me).toggleClass("expanded");
     $(this.elements.searchInput).toggle();
     $(this.elements.topbarBtns).toggle();
     this.state.expanded = !this.state.expanded;
+
+    if(this.state.expanded) {
+        this.scroller.activate();
+        this.scroller.updateDimensions();
+    }
+    else {
+        this.manager.mainPanel.scroller.activate();
+    }
 }
 FmTopPanel.prototype.clickLeftBtn = function(data, callback) {
     $(this.elements.leftBtn).click(data, callback);
+}
+FmTopPanel.prototype.updateHeight = function() {
+    var h = $(window).height();
+    var contentH = 0.9*h - 96;
+    $(this.elements.content).height(contentH);
 }
 /******************************FmMainPanel*******************************/
 function FmMainPanel(manager) {
@@ -151,6 +178,11 @@ function FmMainPanel(manager) {
         result: "#main > .slide.primary > .result",
         moreEntry: "#main > .slide.primary > .result > .entry.more"
     };
+    var scrollContainer = $(this.elements.primaryView).get(0);
+    var scrollContent = $(this.elements.result).get(0);
+    FmMainPanel.container = scrollContainer;
+    FmMainPanel.content = scrollContent;
+    this.scroller = new FmScroller(scrollContainer, scrollContent);
     this.state = {
         entriesTotal: 0,
         entriesNum: 0 
@@ -169,7 +201,7 @@ FmMainPanel.prototype.init = function() {
     var manager = this.manager;
     // windows resize
     $(window).resize(function(e) {
-        mainPanel.updateHeight();
+       mainPanel.updateHeight();
     });
     // click for more entries
     this.$moreEntry.click(function(e) {
@@ -177,10 +209,14 @@ FmMainPanel.prototype.init = function() {
     });
     // set the height of main panel to reveal content
     this.updateHeight();
+    // activate the scroller
+    this.scroller.activate();
 }
 FmMainPanel.prototype.updateHeight = function() {
-    if (this.manager.state.isPrimaryView)
-        $(this.elements.me).height($(this.elements.primaryView).height()); 
+    if (this.manager.state.isPrimaryView) {
+        //$(this.elements.me).height($(this.elements.primaryView).height()); 
+        this.scroller.updateDimensions();
+    }
     else
         $(this.elements.me).height($(this.elements.secondaryView).height()); 
 }
@@ -202,6 +238,7 @@ FmMainPanel.prototype.showResult = function(result) {
     this.state.entriesTotal = result.total;
     // build new result HTML elements
     var resultHtml = this.resultHtmlBuilder.newHtml(entries);
+    $result.append('<div style="width:100%;height:4em;"></div>');
     $result.append(resultHtml);
     // toggle more indicator
     this.updateMoreEntry();
@@ -245,7 +282,155 @@ FmMainPanel.prototype.showLoadingMore = function() {
 }
 FmMainPanel.prototype.hideLoadingMore = function() {
     this.$moreEntry.removeClass('loading');
-} 
+}
+/***************************FmScroller**************************************/
+/**
+ * @para container dom element of container
+ * @para content dom element of content
+ */
+function FmScroller(container, content) {
+    // init variables
+    this.container = container;
+    this.content = content;
+    // init scroller
+    var render = this.getRenderFunc(window, content);
+    this.scroller = new Scroller(render, {
+        scrollingX: false
+    });
+    this.updateDimensions();
+    // activate
+    this.activated = false;
+    FmScroller.instances.push(this);
+    // handle events
+    this.initEventHandler();
+}
+FmScroller.instances = [];
+FmScroller.prototype.activate = function() {
+    // only one scroller is allowed to be active
+    for(i in FmScroller.instances) {
+        FmScroller.instances[i].deactivate();
+    }
+    this.activated = true;
+}
+FmScroller.prototype.deactivate = function() {
+    this.activated = false;
+}
+FmScroller.prototype.initEventHandler = function() {
+    var that = this;
+    if ('ontouchstart' in window) {
+		this.container.addEventListener("touchstart", function(e) {
+            if (!that.activated || 
+			    // Don't react if initial down happens on a form element
+			    e.target.tagName.match(/input|textarea|select/i) ) {
+				return;
+			}
+			that.scroller.doTouchStart(e.touches, e.timeStamp);
+			e.preventDefault();
+		}, false);
+
+		document.addEventListener("touchmove", function(e) {
+            if (!that.activated)
+                return;
+			that.scroller.doTouchMove(e.touches, e.timeStamp);
+		}, false);
+
+		document.addEventListener("touchend", function(e) {
+		    if (!that.activated)
+                return;
+        	that.scroller.doTouchEnd(e.timeStamp);
+		}, false);
+	} else {
+		var mousedown = false;
+
+		this.container.addEventListener("mousedown", function(e) {
+			if (!that.activated ||
+                // Don't react if initial down happens on a form element
+			    e.target.tagName.match(/input|textarea|select/i) ) {
+				return;
+			}
+			
+			that.scroller.doTouchStart([{
+				pageX: e.pageX,
+				pageY: e.pageY
+			}], e.timeStamp);
+
+			mousedown = true;
+		}, false);
+
+		document.addEventListener("mousemove", function(e) {
+            if (!that.activated || !mousedown)
+				return;
+
+			that.scroller.doTouchMove([{
+				pageX: e.pageX,
+				pageY: e.pageY
+			}], e.timeStamp);
+
+			mousedown = true;
+		}, false);
+
+		document.addEventListener("mouseup", function(e) {
+			if (!that.activated || !mousedown) {
+				return;
+			}
+
+			that.scroller.doTouchEnd(e.timeStamp);
+
+			mousedown = false;
+		}, false);
+		
+	} 
+}
+FmScroller.prototype.updateDimensions = function() {
+    this.scroller.setDimensions(
+            this.container.clientWidth, 
+            this.container.clientHeight, 
+            this.content.offsetWidth, 
+            this.content.offsetHeight);
+}
+FmScroller.prototype.getRenderFunc = function(global, content) {
+	var docStyle = document.documentElement.style;
+	
+	var engine;
+	if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
+		engine = 'presto';
+	} else if ('MozAppearance' in docStyle) {
+		engine = 'gecko';
+	} else if ('WebkitAppearance' in docStyle) {
+		engine = 'webkit';
+	} else if (typeof navigator.cpuClass === 'string') {
+		engine = 'trident';
+	}
+	
+	var vendorPrefix = {
+		trident: 'ms',
+		gecko: 'Moz',
+		webkit: 'Webkit',
+		presto: 'O'
+	}[engine];
+	
+	var helperElem = document.createElement("div");
+	var undef;
+
+	var perspectiveProperty = vendorPrefix + "Perspective";
+	var transformProperty = vendorPrefix + "Transform";
+	
+	if (helperElem.style[perspectiveProperty] !== undef) {
+		return function(left, top, zoom) {
+			content.style[transformProperty] = 'translate3d(' + (-left) + 'px,' + (-top) + 'px,0) scale(' + zoom + ')';
+		};	
+	} else if (helperElem.style[transformProperty] !== undef) {
+		return function(left, top, zoom) {
+			content.style[transformProperty] = 'translate(' + (-left) + 'px,' + (-top) + 'px) scale(' + zoom + ')';
+		};
+	} else {
+		return function(left, top, zoom) {
+			content.style.marginLeft = left ? (-left/zoom) + 'px' : '';
+			content.style.marginTop = top ? (-top/zoom) + 'px' : '';
+			content.style.zoom = zoom || '';
+		};
+	}
+}
 /**************************Web Service**************************************/
 function FmWebService() {
     this.url = {
@@ -358,28 +543,30 @@ FmResultHtmlBuilder.prototype.toHtml = function(entries) {
     var rightBtnHtml = '<ul class="buttons"><li class="button arrow-right-icon"></li></ul>';
     var htmlToInsert = [];
     var l = entries.length;
+    var unselectable = " unselectable=on";
     for(var i = 0; i < l; ++i) {
         var e = entries[i];
         var group = this.decideTimeGroup(e);
         var firstInGroup = false;
         if(group != this.lastGroup) {
-            htmlToInsert.push('<div class="title"><h5>' + group + '<span class="nip"></span></h5></div>');
+            htmlToInsert.push('<div class="title"' + unselectable + '><h5>' + 
+                                group + '<span class="nip"></span></h5></div>');
             firstInGroup = true;
             this.lastGroup = group;
         }
         htmlToInsert.push('<div class="entry' + 
-                          (firstInGroup?' first':'')+ '">');
-        htmlToInsert.push('<div class="info">');
-        htmlToInsert.push('<h4><em>' + e.title + '</em></h4>');
+                          (firstInGroup?' first"':'"') + unselectable + '>');
+        htmlToInsert.push('<div class="info"' + unselectable + '>');
+        htmlToInsert.push('<h4' + unselectable + '><em' + unselectable + '>' + e.title + '</em></h4>');
         if(e.authors) {
-            htmlToInsert.push('<p>' + e.authors + 
+            htmlToInsert.push('<p' + unselectable + '>' + e.authors + 
                 (e.publication? '. ' + e.publication : '') + '</p>');
         }
         var k = e.tags.length;
         if(k > 0) {
-            htmlToInsert.push('<p>');
+            htmlToInsert.push('<p' + unselectable + '>');
             for(var j = 0; j < k; ++j) {
-                htmlToInsert.push('<span class="tag">' + e.tags[j] + '</span>');
+                htmlToInsert.push('<span class="tag"' + unselectable + '>' + e.tags[j] + '</span>');
             }
             htmlToInsert.push('</p>');
         }
@@ -390,10 +577,22 @@ FmResultHtmlBuilder.prototype.toHtml = function(entries) {
     return htmlToInsert.join('');
 }
 /******************************Initialization********************************/
+// disable text selection in IE by setting attribute unselectable to true
+function disableIETextSelection(root){
+    var $root = $(root);
+    $root.attr('unselectable', 'on');
+    var children = $root.children();
+    var l = children.length;
+    for(var i = 0; i < l ; ++i)
+        disableIETextSelection(children[i]);
+}
 $(document).ready(function() {
     // init manager
     var manager = new FmManager();
     manager.init();
+    // misc.
+    if ($.browser.msie) 
+        disableIETextSelection($("#top-panel")[0]); 
 });
 
 

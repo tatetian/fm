@@ -18,9 +18,15 @@
 		<!-- Feel free to split the CSS into separate files, if you like. -->
         <link rel="stylesheet" href="css/reset.css"/> 
         <link rel="stylesheet" href="css/index.css"/> 
-		
-	    <!-- Here's Golden Gridlet, the grid overlay script. -->
+
+        <!-- jquery -->
         <script src="js/jquery-1.6.min.js"></script>
+        <!-- scroller from Zynga -->
+        <script src="js/scroller/Raf.js"></script>
+        <script src="js/scroller/Animate.js"></script>
+        <script src="js/scroller/Scroller.js"></script>
+
+        <!-- feastmind JS -->
         <script src="js/date-constants.js"></script>
         <script src="js/index.js"></script>
         <!-- 
@@ -36,9 +42,9 @@
         </div>-->
         <div class="loading">
         </div>
-        <div id="top-panel" class="panel">
+        <div id="top" class="panel unselectable">
             <div class="wrapper">
-                <div id="topbar">
+                <div class="topbar">
                     <ul class="slider">
                         <li class="slide primary">
                         <!-- <div class="button left search-icon clickable"></div> -->
@@ -60,7 +66,7 @@
                 <div class="main">
                     <div class="content">
                         <ul class="tabs">
-                            <li class="tab primary">
+                            <li class="tab folders current">
                                 <ul class="entries">
                                     <li class="entry">
                                         <h3 class="category all">All<span>150</span></h3>
@@ -76,9 +82,9 @@
                                     </li>               
                                 </ul>
                             </li>
-                            <li class="tab secondary">
+                            <li class="tab tags">
                                 <ul class="entries">
-                                    <!--<li class="entry">
+                                    <li class="entry">
                                         <h2>Overview<span></span></h2>
                                     </li>
                                     <li class="entry">
@@ -89,8 +95,10 @@
                                     </li>
                                     <li class="entry">
                                         <h2>Related<span></span></h2>
-                                        </li>-->
+                                        </li>
                                 </ul>
+                            </li>
+                            <li class="tab system">
                             </li>
                         </ul>
                     </div>
@@ -111,10 +119,8 @@
                             </div>
                         </li>
                     </ul>
-                </div> 
+                </div>
             </div>
-            <!---<div class="nip-large">
-            </div>--> 
         </div>
         <!--<div id="message" class="panel">
             <div class="wrapper">
@@ -127,9 +133,9 @@
                 <div class="button"></div>
             </div> 
         </div>-->
-        <ul id="main" class="slider panel">
-            <li class="slide primary">
-                <div class="result">
+        <ul id="main" class="panel slider">
+            <li class="slide primary unselectable" unselectable="on">
+                <div class="result" unselectable="on">
                     <!--<h4 class="title"><span>Just Now<span class="nip"></span></span></h4>
                         <div class="entry">
                             <div class="info">
