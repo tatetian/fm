@@ -44,7 +44,8 @@ FmManager.prototype.init = function() {
 /*            $("#top-panel .main .tab.primary").hide();
             $("#top-panel .bottombar").hide();
             $("#top-panel .main .tab.secondary").show();*/
-            manager.mainPanel.updateHeight();    
+            manager.showLoading();
+            manager.mainPanel.updateHeight(); 
         }
     }); 
     // load data
@@ -155,7 +156,7 @@ function FmMainPanel(manager) {
         entriesNum: 0 
     };
     this.$moreEntry = $('<div class="entry more">' +
-                        '<div class="info"><h3><em>More</em></h3></div>' + 
+                        '<div class="info"><h4><em>More</em></h4></div>' + 
                         '<ul class="buttons">' + 
                         '<li class="button arrow-down-icon"></li>' + 
                         '</ul>' +
@@ -260,7 +261,7 @@ FmWebService.prototype.docsSearch = function(tag, keywords, callback) {
         error: null,
         result: {
             sortedBy: "addedOn",
-            total: 15,
+            total: 3,
             entries: [
                 {   docId: "1111111",
                     title: "Zephyr: Live Migration in Shared Nothing Databases for Elastic Cloud Platforms",
@@ -362,14 +363,14 @@ FmResultHtmlBuilder.prototype.toHtml = function(entries) {
         var group = this.decideTimeGroup(e);
         var firstInGroup = false;
         if(group != this.lastGroup) {
-            htmlToInsert.push('<div class="title"><h4>' + group + '<span class="nip"></span></h4></div>');
+            htmlToInsert.push('<div class="title"><h5>' + group + '<span class="nip"></span></h5></div>');
             firstInGroup = true;
             this.lastGroup = group;
         }
         htmlToInsert.push('<div class="entry' + 
                           (firstInGroup?' first':'')+ '">');
         htmlToInsert.push('<div class="info">');
-        htmlToInsert.push('<h3><em>' + e.title + '</em></h3>');
+        htmlToInsert.push('<h4><em>' + e.title + '</em></h4>');
         if(e.authors) {
             htmlToInsert.push('<p>' + e.authors + 
                 (e.publication? '. ' + e.publication : '') + '</p>');

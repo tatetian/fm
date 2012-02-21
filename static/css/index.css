@@ -178,6 +178,9 @@ h3 {
     font-size: 1.6em;
 }
 h4 {
+    font-size: 1.5em;
+}
+h5 {
     font-size: 0.75em;
 }
 p {
@@ -568,13 +571,13 @@ body > .loading {
 .sub-result.end {
     border-bottom: 4px solid #5A5050;
 }*/
-.result > div.title {   /* group title*/
+body > #main  div.title {   /* group title*/
     border-top: 1px solid #B1AEAE;
     text-align: center;
     text-transform: uppercase;
     color: white;
 }
-.result > div.title > h4{
+body > #main  div.title > h5{
     z-index: 50;
     padding: 0 1em 0.1em;
     background: url(../images/bg-tile-dark.png) repeat center top;
@@ -585,7 +588,7 @@ body > .loading {
     margin: 0 auto;
     line-height: 1.2;
 }
-.result > div.title > h4 > span.nip {
+body > #main div.title > h5 > span.nip {
     background: url(../images/nips.png) no-repeat center top;
     position: absolute;
     width: 100%;
@@ -597,7 +600,7 @@ body > .loading {
     line-height: 1.1;
     border-top: 1px dotted #B1AEAE;
     /*min-height: 6em;*/
-    padding: 0.61em 0.125em;
+    padding: 0.8em 0.125em;
     position: relative;
     min-height: 26px;
 }
@@ -657,7 +660,7 @@ body > .loading {
 
 div.paper-cover {
     width: 275px;
-    background: transparent url(../images/paper-cover-shadow.png);
+    background: transparent url(../images/paper-cover-shadow.png) center bottom;
     padding: 0 0 8px;
     margin: 0em auto 1em;
 }
