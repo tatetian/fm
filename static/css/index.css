@@ -257,11 +257,12 @@ body > .loading {
 .button {
     width: 2.75em;
     height: 3em; 
-    cursor: pointer;
 }
-.clickable:hover {
-    cursor: pointer;
+.clickable {
+}
+.button.clickable:hover {
     color: #6EB3D1;
+    cursor: pointer;
 }
 #loadbar {
     /**background-color: #5A5050;**/
@@ -596,10 +597,10 @@ body > #main div.title > h5 > span.nip {
 .result .entry:last-child {
     border-bottom: 2px solid #B1AEAE;
 }
-/*.result .entry:hover {
+.result .entry.clicked {
     background: url(../images/bg-tile-light.png) repeat center top;
     color: #6EB3D1; 
-}*/
+}
 .result .entry .info {
     margin-right: 3em;
 }
@@ -615,10 +616,10 @@ body > #main div.title > h5 > span.nip {
 /*    border-top-right-radius: 1em 1em;
     border-bottom-right-radius: 1em 1em;*/
 }
-/*.result .entry:hover .buttons {
+.result .entry.clicked .buttons {
     display: block;
     background: url(../images/bg-tile-blue.png) repeat center top;
-}*/
+}
 .result .entry .buttons .button {
     width: 100%;
     height: 100%;
@@ -636,9 +637,9 @@ body > #main div.title > h5 > span.nip {
 .result .entry.more.loading .info {
     background: url(../images/small-loading-d.gif) no-repeat center center;
 }
-/*.result .entry.more.loading:hover .info {
+.result .entry.more.loading.clicked .info {
     background: url(../images/small-loading-b.gif) no-repeat center center;
-}*/
+}
 
 div.paper-cover {
     width: 275px;
@@ -750,6 +751,9 @@ img.paper-cover {
 }
 .arrow-right-icon {
     background: url(../images/arrow-right-d-tiny.png) no-repeat center center;
+}
+.clicked .arrow-right-icon {
+    background: url(../images/arrow-right-w-tiny.png) no-repeat center center;
 }
 .arrow-down-icon {
     background: url(../images/arrow-down-d-tiny.png) no-repeat center center;

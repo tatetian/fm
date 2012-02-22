@@ -44,7 +44,7 @@ FmManager.prototype.init = function() {
 /*            $("#top-panel .main .tab.primary").hide();
             $("#top-panel .bottombar").hide();
             $("#top-panel .main .tab.secondary").show();*/
-            manager.showLoading();
+            //manager.showLoading();
             //manager.mainPanel.updateHeight(); 
         }
     });
@@ -175,7 +175,7 @@ function FmMainPanel(manager) {
         me: "#main.slider",
         primaryView: "#main.slider > .slide.primary",
         secondaryView: "#main.slider > .slide.secondary",
-        rightBtns: ".entry li.button.arrow-right-icon",
+        entries: "#main .entry.clickable",
         result: "#main > .slide.primary > .result",
         moreEntry: "#main > .slide.primary > .result > .entry.more"
     };
@@ -223,8 +223,8 @@ FmMainPanel.prototype.updateHeight = function() {
 }
 FmMainPanel.prototype.clickRightBtn = function(data, callback) {
     $(this.elements.me).delegate(
-            this.elements.rightBtns, 
-            "click", 
+            this.elements.entries, 
+            "fmClick", 
             data, 
             callback);
 }
@@ -346,6 +346,8 @@ FmScroller.prototype.initEventHandler = function() {
 		}, false);
 	} else {
 		var mousedown = false;
+        var moved = false;
+        var $clicked = [];
 
 		this.container.addEventListener("mousedown", function(e) {
 			if (!that.activated ||
@@ -360,13 +362,23 @@ FmScroller.prototype.initEventHandler = function() {
 			}], e.timeStamp);
 
             that.scrollbar.show();
-
 			mousedown = true;
+            moved = false;
+
+            setTimeout(function() {
+                if (moved)
+                    return;
+                var $newClicked = $(e.target).closest('.clickable');
+                $newClicked.addClass('clicked');
+                $clicked.push($newClicked);
+            }, 100);
 		}, false);
 
 		document.addEventListener("mousemove", function(e) {
             if (!that.activated || !mousedown)
 				return;
+
+            moved = true;
 
 			that.scroller.doTouchMove([{
 				pageX: e.pageX,
@@ -383,7 +395,15 @@ FmScroller.prototype.initEventHandler = function() {
 
 			that.scroller.doTouchEnd(e.timeStamp);
             that.scrollbar.hide();
-
+            
+            if(!moved)
+                $(e.target).closest('.clickable').trigger('fmClick');
+            if($clicked.length > 0) {
+                setTimeout(function() {
+                    for(i in $clicked)
+                        $clicked[i].removeClass('clicked');
+                }, 100);
+            }
 			mousedown = false;
 		}, false);
 		
@@ -631,7 +651,7 @@ FmResultHtmlBuilder.prototype.toHtml = function(entries) {
             firstInGroup = true;
             this.lastGroup = group;
         }
-        htmlToInsert.push('<div class="entry' + 
+        htmlToInsert.push('<div class="entry clickable' + 
                           (firstInGroup?' first"':'"') + unselectable + '>');
         htmlToInsert.push('<div class="info"' + unselectable + '>');
         htmlToInsert.push('<h4' + unselectable + '><em' + unselectable + '>' + e.title + '</em></h4>');
