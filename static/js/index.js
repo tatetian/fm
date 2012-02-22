@@ -356,22 +356,23 @@ FmScroller.prototype.initEventHandler = function() {
 				return;
 			}
 			
-			that.scroller.doTouchStart([{
-				pageX: e.pageX,
-				pageY: e.pageY
-			}], e.timeStamp);
-
-            that.scrollbar.show();
+            // if scroller in motion, won't trigger click event
+            moved = false || that.scroller.__isDecelerating;
 			mousedown = true;
-            moved = false;
-
-            setTimeout(function() {
+	
+            that.scrollbar.show();
+            setTimeout(function() { // show click effect after delay
                 if (moved)
                     return;
                 var $newClicked = $(e.target).closest('.clickable');
                 $newClicked.addClass('clicked');
                 $clicked.push($newClicked);
-            }, 100);
+            i}, 100);
+
+            that.scroller.doTouchStart([{
+				pageX: e.pageX,
+				pageY: e.pageY
+			}], e.timeStamp);
 		}, false);
 
 		document.addEventListener("mousemove", function(e) {
