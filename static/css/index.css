@@ -169,6 +169,8 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
+    /* without this css, css transformed font would look terrible in safari */
+    -webkit-font-smoothing: antialiased;
 }
 h1 {
     font-size: 3em;
