@@ -333,6 +333,7 @@ body > .loading {
     border-bottom-right-radius: 1em 1em;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.597656) 0px 0px 1em 0px, rgba(0, 0, 0, 0.398438) 0px 0px 1em 0px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.597656) 0px 0px 1em 0px, rgba(0, 0, 0, 0.398438) 0px 0px 1em 0px;
     overflow: hidden;
 }
 #top > .wrapper > .topbar {
