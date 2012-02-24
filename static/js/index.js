@@ -85,19 +85,18 @@ function FmTopPanel(manager) {
         mainView: "#top > .wrapper > .main",
         searchInput: "#search",
         topbarBtns: "#top .tab .button",
-        titleLbl: "#top .title",
+        titleLbl: "#top .primary .title",
         entry: "#top .entries .entry",
         $leftBtn: $("#top .slide.secondary .button.arrow-left-icon"),
         tabs: "#top .content .tabs",
         content: "#top .content",
         mainPanel: "#main",
+        bottomBtns: '#top .bottombar .button',
         $slides: $('#top .slide')
     };
     // scroller
     var scrollContainer = $(this.elements.content).get(0);
     var scrollContent = $(this.elements.tabs).get(0);
-    FmMainPanel.container = scrollContainer;
-    FmMainPanel.content = scrollContent;
     this.scroller = new FmScroller(scrollContainer, scrollContent, scrollContainer);
 }
 FmTopPanel.prototype.init = function() {
@@ -117,6 +116,25 @@ FmTopPanel.prototype.init = function() {
         that.updateHeight();
     });
     this.updateHeight();
+    // bottom bar click
+    var btn2Tab = {
+        'Favourite':    $(this.elements.tabs + ' > .fav'),
+        'Tags':         $(this.elements.tabs + ' > .tags'),
+        'System':       $(this.elements.tabs + ' > .system')
+    };
+    var currentTab = btn2Tab.Favourite;
+    var currentBtn = $(this.elements.bottomBtns + '.fav-icon');
+    $(this.elements.bottomBtns).click(function(e) {
+        // tab
+        var tabName = $(this).text().trim();
+        currentTab.removeClass('current');
+        currentTab = btn2Tab[tabName];
+        currentTab.addClass('current');
+        // btn
+        currentBtn.removeClass('current');
+        currentBtn = $(this);
+        currentBtn.addClass('current'); 
+    });
 }
 FmTopPanel.prototype.toggle = function() {
     $(this.elements.mainView).slideToggle();
@@ -171,8 +189,6 @@ function FmMainPanel(manager) {
     };
     var scrollContainer = $(this.elements.primaryView).get(0);
     var scrollContent = $(this.elements.result).get(0);
-    FmMainPanel.container = scrollContainer;
-    FmMainPanel.content = scrollContent;
     this.scroller = new FmScroller(scrollContainer, scrollContent, $("body")[0]);
     this.elements.$moreEntry = 
         $(  '<div class="entry more">' +
@@ -292,7 +308,6 @@ function FmScroller(container, content, scrollbarContainer) {
     this.scroller = new Scroller(render, {
         scrollingX: false
     });
-    this.updateDimensions();
     // activate
     this.activated = false;
     FmScroller.instances.push(this);
@@ -407,7 +422,7 @@ FmScroller.prototype.updateDimensions = function() {
             this.container.clientHeight, 
             this.content.offsetWidth, 
             this.content.offsetHeight);
-    this.scrollbar.updateHeight();
+    this.scrollbar.updateDimensions();
 }
 FmScroller.prototype.getRenderFunc = function(global, container, content, scrollbar, scrollbarContainer) {
 	var docStyle = document.documentElement.style;
@@ -499,7 +514,7 @@ function FmScrollBar(container, content, scrollbarContainer) {
     this.element = this.$bar.get(0);
     $(scrollbarContainer).append(this.$bar);
 }
-FmScrollBar.prototype.updateHeight = function() {
+FmScrollBar.prototype.updateDimensions = function() {
     this.overflow = this.content.offsetHeight > this.container.clientHeight;
     if(!this.overflow)
         this.hide();

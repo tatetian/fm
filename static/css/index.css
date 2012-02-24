@@ -433,6 +433,9 @@ body > .loading {
     position: relative;
     cursor: pointer;
 }
+#top .bottombar li .button.current {
+    color: #6EB3D1;
+}
 #top .bottombar li .button p{
     font-size: 0.75em;      /* 0.75em = 0.75 * 16px = 12px*/
     position: absolute;
@@ -492,7 +495,7 @@ body > .loading {
 }
 #search:focus {
     outline: 0;
-    width: 20em;
+    width: 10em;
     cursor: auto;
 }
 #message {
@@ -637,9 +640,6 @@ body > #main div.title > h5 > span.nip {
     background: url(../images/tag-small-light.png) no-repeat;
     margin-right: 1em;
 }
-.result .entry.more {
-    cursor: pointer;
-}
 .result .entry.more.loading .info {
     background: url(../images/small-loading-d.gif) no-repeat center center;
 }
@@ -651,11 +651,11 @@ div.paper-cover {
     width: 275px;
     background: transparent url(../images/paper-cover-shadow.png) center bottom;
     padding: 0 0 8px;
-    margin: 0em auto 1em;
+    margin: 4em auto 1em;
 }
-img.paper-cover {
+div.paper-cover > img {
     border: 0;
-    width: 100%;
+    width: 275px;
     border: 1px solid #999;
     box-shadow: 0 0 2px #999;
 /*    box-shadow: rgba(0, 0, 0, 0.597656) 0.125em 0.25em 0.6em 0px*//*, rgba(0, 0, 0, 0.398438) 0px 0px 0.6em 0px*/;

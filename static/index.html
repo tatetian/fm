@@ -42,7 +42,7 @@
         </div>-->
         <div class="loading">
         </div>
-        <div id="top" class="panel unselectable">
+        <div id="top" class="panel">
             <div class="wrapper">
                 <div class="topbar">
                     <ul class="slider">
@@ -50,12 +50,12 @@
                         <!-- <div class="button left search-icon clickable"></div> -->
                             <input id="search" type="text" size="200" />
 
-                            <h2 class="title"><span class="category all clickable">All</span></h2>
+                            <h2 class="title unselectable"><span class="category all clickable">All</span></h2>
                             <div class="button right plus-icon clickable"></div>
                         </li>
                         <li class="slide secondary">
                             <div class="button left arrow-left-icon clickable"></div>
-                            <h4 class="title"><span><em>Zephyr: Live Migration in Shared Nothing Databases for Elastic Cloud Platforms</em></span></h4>
+                            <h4 class="title unselectable"><span><em>Zephyr: Live Migration in Shared Nothing Databases for Elastic Cloud Platforms</em></span></h4>
                             <div class="button right edit-icon clickable"></div>
                         </li>
                     </ul>
@@ -63,10 +63,10 @@
                     <input id="search" type="text" placeholder="Search"></input>
                     --> 
                 </div>
-                <div class="main">
+                <div class="main unselectable">
                     <div class="content">
                         <ul class="tabs">
-                            <li class="tab folders current">
+                            <li class="tab fav current">
                                 <ul class="entries">
                                     <li class="entry">
                                         <h3 class="category all">All<span>150</span></h3>
@@ -85,17 +85,11 @@
                             <li class="tab tags">
                                 <ul class="entries">
                                     <li class="entry">
-                                        <h2>Overview<span></span></h2>
+                                        <h3 class="tag">column store<span>0</span></h3>
                                     </li>
                                     <li class="entry">
-                                        <h2>References<span></span></h2>
-                                    </li>
-                                    <li class="entry">
-                                        <h2>Notes<span></span></h2>
-                                    </li>
-                                    <li class="entry">
-                                        <h2>Related<span></span></h2>
-                                    </li>
+                                        <h3 class="tag">VLDB<span>5</span></h3>
+                                    </li>               
                                 </ul>
                             </li>
                             <li class="tab system">
@@ -104,7 +98,7 @@
                     </div>
                     <ul class="bottombar">
                         <li>
-                            <div class="button fav-icon clickable">
+                            <div class="button fav-icon clickable current">
                                 <p>Favourite</p>
                             </div>
                         </li>
@@ -133,12 +127,12 @@
                 <div class="button"></div>
             </div> 
         </div>-->
-        <ul id="main" class="panel slider">
-            <li class="slide primary unselectable" unselectable="on">
+        <ul id="main" class="panel slider unselectable">
+            <li class="slide primary" unselectable="on">
                 <div class="result" unselectable="on">
                 </div>                        
             </li>
-            <li class="entry-details slide secondary" style="min-height:50em;">
+            <li class="entry-details slide secondary">
                 <div class="wrapper">
                     <div class="paper-cover">
                         <img class="paper-cover" src="images/sample-paper-cover.png">
