@@ -376,6 +376,9 @@ body > .loading {
     overflow: hidden;
     margin: 0 96px; /*leave space for buttons at both sides*/
 }
+.title {
+    text-shadow: 0 0 1px white;
+}
 #top .topbar .secondary .title {
     line-height: 1.875; 
 }
@@ -594,6 +597,9 @@ body > #main div.title > h5 > span.nip {
     position: relative;
     min-height: 26px;
 }
+.result .entry em {
+    text-shadow:0 0 1px #5A5050;
+}
 .result .entry.first {
     border-top: none;
 }
@@ -603,6 +609,9 @@ body > #main div.title > h5 > span.nip {
 .result .entry.clicked {
     background: url(../images/bg-tile-light.png) repeat center top;
     color: #6EB3D1; 
+}
+.result .entry.clicked em {
+    text-shadow:0 0 1px #6EB3D1;
 }
 .result .entry .info {
     margin-right: 3em;
@@ -660,6 +669,8 @@ img.paper-cover {
 }
 .entry-details p {
     margin: 1em 0 1.5em;
+    line-height: 1.6;
+    text-shadow:0 0 1px #5A5050;
 }
 .entry-details > .wrapper {
     margin: 0 auto;
@@ -672,12 +683,12 @@ img.paper-cover {
   margin-top   : -0.32em; /* use -0.205em for two lines */
   margin-left  : -0.1em;
   margin-right : 0.5em;
-  height       : 4.5em;
+  height       : 4.6em;
   font-family: ClarendonFSBold,Georgia,sans-serif;
 
 }
 .first-letter span{
-  font-size    : 5.3em;   /* use 3.33em for two lines */
+  font-size    : 5.5em;   /* use 3.33em for two lines */
   line-height  : 1.0em;
 }
 
