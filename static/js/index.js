@@ -5,15 +5,13 @@ function FmManager() {
     this.webService = new FmWebService(this);
 
     this.state = {
-        isPrimaryView : true,
         lastSearch: {
             tag: null,
             keywords: null
         }
     };
     this.elements = {
-        slides: ".slide",
-        loader: "body > .loading"
+        $loader: $("body > .loading")
     };
 }
 FmManager.prototype.init = function() {
@@ -21,36 +19,22 @@ FmManager.prototype.init = function() {
     this.topPanel.init();
     this.mainPanel.init();
     // init slide event
-    var manager = this;
-    this.topPanel.clickLeftBtn(function(e) {
-        if(!manager.state.isPrimaryView) {
-            manager.state.isPrimaryView = true;
-            $(manager.elements.slides).animate({"left":"+=100%"});
-           /* $("#top-panel .main .tab.primary").show();
-            $("#top-panel .bottombar").show();
-            $("#top-panel .main .tab.secondary").hide();*/
-            //manager.mainPanel.updateHeight();
-        } 
-    });
-    this.mainPanel.clickRightBtn(function(e) {
-        if(manager.state.isPrimaryView) {
-            manager.state.isPrimaryView = false;
-            $(manager.elements.slides).animate({"left":"-=100%"});
-/*            $("#top-panel .main .tab.primary").hide();
-            $("#top-panel .bottombar").hide();
-            $("#top-panel .main .tab.secondary").show();*/
-            //manager.showLoading();
-            //manager.mainPanel.updateHeight(); 
-        }
-    });
+    var that = this;
+    function slideView(e) {
+        that.topPanel.slideView();
+        that.mainPanel.slideView();
+        if(e) e.stopPropagation();
+    }
+    this.topPanel.clickLeftBtn(slideView);
+    this.mainPanel.clickRightBtn(slideView);
     // load data
     this.search("all", null);
 }
 FmManager.prototype.showLoading = function() {
-    $(this.elements.loader).fadeIn();
+    this.elements.$loader.fadeIn();
 }
 FmManager.prototype.hideLoading = function() {
-    $(this.elements.loader).fadeOut();
+    this.elements.$loader.fadeOut();
 }
 // do a new search
 FmManager.prototype.search = function(tag, keywords) {
@@ -60,11 +44,11 @@ FmManager.prototype.search = function(tag, keywords) {
     // show loading
     this.showLoading();
     // do search
-    var manager = this;
+    var that = this;
     this.webService.docsSearch(tag, keywords, function(response) {
         if(!response.error) {
-            manager.mainPanel.showResult(response.result);
-            manager.hideLoading();
+            that.mainPanel.showResult(response.result);
+            that.hideLoading();
         }
         else {  // handle error
             
@@ -77,12 +61,12 @@ FmManager.prototype.more = function() {
     var tag = this.state.lastSearch.tag;
     var keywords = this.state.lastSearch.keywords;
     // do the search
-    var manager = this;
+    var that = this;
     this.mainPanel.showLoadingMore();
     this.webService.docsSearch(tag, keywords, function(response) {
         if(!response.error) {
-            manager.mainPanel.showMoreResult(response.result);
-            manager.mainPanel.hideLoadingMore();
+            that.mainPanel.showMoreResult(response.result);
+            that.mainPanel.hideLoadingMore();
         }
         else {  // handle error
             
@@ -93,6 +77,7 @@ FmManager.prototype.more = function() {
 function FmTopPanel(manager) {
     this.manager = manager;
     this.state = {
+        isPrimaryView: true,
         expanded: false
     };
     this.elements = {
@@ -102,9 +87,11 @@ function FmTopPanel(manager) {
         topbarBtns: "#top .tab .button",
         titleLbl: "#top .title",
         entry: "#top .entries .entry",
-        leftBtn: "#top .slide.secondary .button.arrow-left-icon",
+        $leftBtn: $("#top .slide.secondary .button.arrow-left-icon"),
         tabs: "#top .content .tabs",
-        content: "#top .content"
+        content: "#top .content",
+        mainPanel: "#main",
+        $slides: $('#top .slide')
     };
     // scroller
     var scrollContainer = $(this.elements.content).get(0);
@@ -114,25 +101,20 @@ function FmTopPanel(manager) {
     this.scroller = new FmScroller(scrollContainer, scrollContent, scrollContainer);
 }
 FmTopPanel.prototype.init = function() {
-    // toggle toppanel
-    var topPanel = this;
+    // toggle event
+    var that = this;
     function onToggle(e) {
-        topPanel.toggle();
+        that.toggle();
         if(e) e.stopPropagation();
     }
     $(this.elements.titleLbl).click(onToggle);
-    $("body").click(function(e) {
-        if(topPanel.state.expanded)
+    $(this.elements.mainPanel).click(function(e) {
+        if(that.state.expanded)
             onToggle();
     });
-    // animate search bar
-    $(this.elements.searchInput).focus(function(e){
-        $(this).animate({"width":"8em"}, "fast");
-        e.stopPropagation();
-    });
-    // resize
+    // resize event
     $(window).resize(function() {
-        topPanel.updateHeight();
+        that.updateHeight();
     });
     this.updateHeight();
 }
@@ -141,19 +123,30 @@ FmTopPanel.prototype.toggle = function() {
     $(this.elements.me).toggleClass("expanded");
     $(this.elements.searchInput).toggle();
     $(this.elements.topbarBtns).toggle();
+
     this.state.expanded = !this.state.expanded;
 
     if(this.state.expanded) {
         this.scroller.activate();
-        this.scroller.updateDimensions();
     }
     else {
         this.manager.mainPanel.scroller.activate();
     }
 }
-FmTopPanel.prototype.clickLeftBtn = function(data, callback) {
-    $(this.elements.leftBtn).click(data, callback);
+FmTopPanel.prototype.slideView = function() {
+    if(this.state.isPrimaryView) {
+        this.state.isPrimaryView = false;
+        this.elements.$slides.animate({"left":"-=100%"});
+    }
+    else {
+        this.state.isPrimaryView = true;
+        this.elements.$slides.animate({"left":"+=100%"});
+    }
 }
+FmTopPanel.prototype.clickLeftBtn = function(callback) {
+    this.elements.$leftBtn.click(callback);
+}
+// TO-DO: better way to animate toggle and decide height
 FmTopPanel.prototype.updateHeight = function() {
     var h = $(window).height();
     var contentH = 0.9*h - 96;
@@ -169,23 +162,25 @@ function FmMainPanel(manager) {
         secondaryView: "#main.slider > .slide.secondary",
         entries: "#main .entry.clickable",
         result: "#main > .slide.primary > .result",
-        moreEntry: "#main > .slide.primary > .result > .entry.more"
+        $slides: $('#main .slide')
+    };
+    this.state = {
+        isPrimaryView: true,
+        entriesTotal: 0,
+        entriesNum: 0 
     };
     var scrollContainer = $(this.elements.primaryView).get(0);
     var scrollContent = $(this.elements.result).get(0);
     FmMainPanel.container = scrollContainer;
     FmMainPanel.content = scrollContent;
     this.scroller = new FmScroller(scrollContainer, scrollContent, $("body")[0]);
-    this.state = {
-        entriesTotal: 0,
-        entriesNum: 0 
-    };
-    this.$moreEntry = $('<div class="entry more">' +
-                        '<div class="info"><h4><em>More</em></h4></div>' + 
-                        '<ul class="buttons">' + 
-                        '<li class="button arrow-down-icon"></li>' + 
-                        '</ul>' +
-                        '</div>')
+    this.elements.$moreEntry = 
+        $(  '<div class="entry more">' +
+            '<div class="info"><h4><em>More</em></h4></div>' + 
+            '<ul class="buttons">' + 
+            '<li class="button arrow-down-icon"></li>' + 
+            '</ul>' +
+            '</div>' )
     this.resultHtmlBuilder = new FmResultHtmlBuilder();
 }
 FmMainPanel.prototype.init = function() {
@@ -194,30 +189,37 @@ FmMainPanel.prototype.init = function() {
     var manager = this.manager;
     // windows resize
     $(window).resize(function(e) {
-       mainPanel.updateHeight();
+       mainPanel.resize();
     });
+    this.resize();
     // click for more entries
-    this.$moreEntry.click(function(e) {
+    this.elements.$moreEntry.click(function(e) {
         manager.more();
     });
-    // set the height of main panel to reveal content
-    this.updateHeight();
     // activate the scroller
     this.scroller.activate();
 }
-FmMainPanel.prototype.updateHeight = function() {
-    if (this.manager.state.isPrimaryView) {
-        //$(this.elements.me).height($(this.elements.primaryView).height()); 
+FmMainPanel.prototype.slideView = function() {
+    if(this.state.isPrimaryView) {
+        this.state.isPrimaryView = false;
+        this.elements.$slides.animate({"left":"-=100%"});
+    }
+    else {
+        this.state.isPrimaryView = true;
+        this.elements.$slides.animate({"left":"+=100%"});
+    }
+}
+FmMainPanel.prototype.resize = function() {
+    if (this.state.isPrimaryView) {
         this.scroller.updateDimensions();
     }
-    else
-        $(this.elements.me).height($(this.elements.secondaryView).height()); 
+    else {
+    }
 }
-FmMainPanel.prototype.clickRightBtn = function(data, callback) {
+FmMainPanel.prototype.clickRightBtn = function(callback) {
     $(this.elements.me).delegate(
             this.elements.entries, 
             "fmClick", 
-            data, 
             callback);
 }
 FmMainPanel.prototype.showResult = function(result) {
@@ -225,6 +227,7 @@ FmMainPanel.prototype.showResult = function(result) {
     var $result = $(this.elements.result);
     // remove old result
     $result.hide();
+    this.elements.$moreEntry.detach();
     $result.children().remove();
     // update counter
     this.state.entriesNum = entries.length;
@@ -234,11 +237,11 @@ FmMainPanel.prototype.showResult = function(result) {
     $result.append('<div style="width:100%;height:4em;"></div>');
     $result.append(resultHtml);
     // toggle more indicator
-    this.updateMoreEntry();
+    this.appendMoreEntry();
     // show it
-    var mainPanel = this;
+    var that = this;
     $result.fadeIn('fast', function() {
-        mainPanel.updateHeight();
+        that.resize();
     });
 }
 FmMainPanel.prototype.showMoreResult = function(moreResult) {
@@ -250,31 +253,26 @@ FmMainPanel.prototype.showMoreResult = function(moreResult) {
     var moreResultHtml = this.resultHtmlBuilder.moreHtml(entries);
     // append
     var $moreResultHtml = $(moreResultHtml);
-    this.$moreEntry.detach();
+    this.elements.$moreEntry.detach();
     $moreResultHtml.hide();
     $result.append($moreResultHtml);
-    this.updateMoreEntry();
+    this.appendMoreEntry();
     // show it
-    var mainPanel = this;
+    var that = this;
     $moreResultHtml.fadeIn('fast', function(){
-        mainPanel.updateHeight();
+        that.resize();
     });
 }
-FmMainPanel.prototype.updateMoreEntry = function() {
+FmMainPanel.prototype.appendMoreEntry = function() {
     if (this.state.entriesNum < this.state.entriesTotal) {
-    //    $(this.elements.moreEntry).show();
-        this.$moreEntry.appendTo($(this.elements.result));
-    }
-    else {
-    //    $(this.elements.moreEntry).hide();
-        this.$moreEntry.detach();
+        this.elements.$moreEntry.appendTo($(this.elements.result));
     }
 }
 FmMainPanel.prototype.showLoadingMore = function() {
-    this.$moreEntry.addClass('loading');
+    this.elements.$moreEntry.addClass('loading');
 }
 FmMainPanel.prototype.hideLoadingMore = function() {
-    this.$moreEntry.removeClass('loading');
+    this.elements.$moreEntry.removeClass('loading');
 }
 /***************************FmScroller**************************************/
 /**
@@ -308,6 +306,7 @@ FmScroller.prototype.activate = function() {
         FmScroller.instances[i].deactivate();
     }
     this.activated = true;
+    this.updateDimensions();
 }
 FmScroller.prototype.deactivate = function() {
     this.activated = false;
@@ -536,7 +535,7 @@ FmWebService.prototype.docsSearch = function(tag, keywords, callback) {
         error: null,
         result: {
             sortedBy: "addedOn",
-            total: 3,
+            total: 9,
             entries: [
                 {   docId: "1111111",
                     title: "Zephyr: Live Migration in Shared Nothing Databases for Elastic Cloud Platforms",
