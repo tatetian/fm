@@ -182,7 +182,7 @@ h3 {
     font-size: 1.6em;
 }
 h4 {
-    font-size: 1.5em;
+    font-size: 1.6em;
 }
 h5 {
     font-size: 0.75em;
@@ -377,7 +377,7 @@ body > .loading {
     margin: 0 96px; /*leave space for buttons at both sides*/
 }
 .title {
-    text-shadow: 0 0 1px white;
+    text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
 }
 #top .topbar .secondary .title {
     line-height: 1.875; 
@@ -597,9 +597,6 @@ body > #main div.title > h5 > span.nip {
     position: relative;
     min-height: 26px;
 }
-.result .entry em {
-    text-shadow:0 0 1px #5A5050;
-}
 .result .entry.first {
     border-top: none;
 }
@@ -609,9 +606,6 @@ body > #main div.title > h5 > span.nip {
 .result .entry.clicked {
     background: url(../images/bg-tile-light.png) repeat center top;
     color: #6EB3D1; 
-}
-.result .entry.clicked em {
-    text-shadow:0 0 1px #6EB3D1;
 }
 .result .entry .info {
     margin-right: 3em;
