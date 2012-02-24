@@ -6,14 +6,12 @@ function FmManager() {
 
     this.state = {
         isPrimaryView : true,
-        lastScrollTop: 0,
         lastSearch: {
             tag: null,
             keywords: null
         }
     };
     this.elements = {
-        scrollOwner: $.browser.msie || $.browser.mozilla || $.browser.opera ? "html" : "body",
         slides: ".slide",
         loader: "body > .loading"
     };
@@ -31,16 +29,13 @@ FmManager.prototype.init = function() {
            /* $("#top-panel .main .tab.primary").show();
             $("#top-panel .bottombar").show();
             $("#top-panel .main .tab.secondary").hide();*/
-            manager.scrollTo(manager.state.lastScrollTop);
             //manager.mainPanel.updateHeight();
         } 
     });
     this.mainPanel.clickRightBtn(function(e) {
         if(manager.state.isPrimaryView) {
             manager.state.isPrimaryView = false;
-            manager.state.lastScrollTop = $(window).scrollTop();
             $(manager.elements.slides).animate({"left":"-=100%"});
-            manager.scrollTo(0);
 /*            $("#top-panel .main .tab.primary").hide();
             $("#top-panel .bottombar").hide();
             $("#top-panel .main .tab.secondary").show();*/
@@ -56,9 +51,6 @@ FmManager.prototype.showLoading = function() {
 }
 FmManager.prototype.hideLoading = function() {
     $(this.elements.loader).fadeOut();
-}
-FmManager.prototype.scrollTo = function(pos) {
-     $(this.elements.scrollOwner).animate({"scrollTop": pos});
 }
 // do a new search
 FmManager.prototype.search = function(tag, keywords) {
