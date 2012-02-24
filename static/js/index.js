@@ -334,7 +334,7 @@ function FmScroller(container, content, scrollbarContainer) {
     this.scrollbar = new FmScrollBar(container, content, scrollbarContainer);
     // init scroller
     var render = this.getRenderFunc(window, container, content, 
-                                    this.scrollbar.element, 
+                                    this.scrollbar.$bar.get(0), 
                                     scrollbarContainer);
     this.scroller = new Scroller(render, {
         scrollingX: false
@@ -356,6 +356,7 @@ FmScroller.prototype.activate = function() {
 }
 FmScroller.prototype.deactivate = function() {
     this.activated = false;
+    this.scrollbar.$bar.hide();
 }
 FmScroller.prototype.initEventHandler = function() {
     var that = this;
@@ -397,7 +398,6 @@ FmScroller.prototype.initEventHandler = function() {
             moved = false || that.scroller.__isDecelerating;
 			mousedown = true;
 	
-            that.scrollbar.show();
             setTimeout(function() { // show click effect after delay
                 if (moved)
                     return;
@@ -405,11 +405,13 @@ FmScroller.prototype.initEventHandler = function() {
                 $newClicked.addClass('clicked');
                 $clicked.push($newClicked);
             i}, 100);
-
+            
             that.scroller.doTouchStart([{
 				pageX: e.pageX,
 				pageY: e.pageY
 			}], e.timeStamp);
+
+            that.scrollbar.show();
 		}, false);
 
 		document.addEventListener("mousemove", function(e) {
@@ -422,8 +424,6 @@ FmScroller.prototype.initEventHandler = function() {
 				pageX: e.pageX,
 				pageY: e.pageY
 			}], e.timeStamp);
-
-			mousedown = true;
 		}, false);
 
 		document.addEventListener("mouseup", function(e) {
@@ -431,9 +431,6 @@ FmScroller.prototype.initEventHandler = function() {
 				return;
 			}
 
-			that.scroller.doTouchEnd(e.timeStamp);
-            that.scrollbar.hide();
-            
             if(!moved)
                 $(e.target).closest('.clickable').trigger('fmClick');
             if($clicked.length > 0) {
@@ -442,6 +439,10 @@ FmScroller.prototype.initEventHandler = function() {
                         $clicked[i].removeClass('clicked');
                 }, 100);
             }
+
+            that.scroller.doTouchEnd(e.timeStamp);
+            that.scrollbar.hide();
+
 			mousedown = false;
 		}, false);
 		
@@ -488,18 +489,6 @@ FmScroller.prototype.getRenderFunc = function(global, container, content, scroll
         var H = scrollbarContainer.clientHeight - 2 * FmScrollBar.minTop;
         var f = H / content.offsetHeight; 
         top *=f;
-        if (top < 0) {  // topbar overflow at top
-            h += top;
-            if (h < FmScrollBar.minH)
-                h = FmScrollBar.minH;
-            top = 0;
-        }
-        else if (top + h > H ) {   // topbar overflow at bottom
-            h = H - top;
-            if (h < FmScrollBar.minH)
-                h = FmScrollBar.minH;
-            top = H - h;
-        }
         return {t: top, h:h};
     }
 	if (helperElem.style[perspectiveProperty] !== undef) {
@@ -507,7 +496,6 @@ FmScroller.prototype.getRenderFunc = function(global, container, content, scroll
 			content.style[transformProperty] = 'translate3d(' + (-left) + 'px,' + (-top) + 'px,0) scale(' + zoom + ')';
             
             var topAndHeight = topAndHeightForScrollbar(top); 
-            scrollbar.style.height = topAndHeight.h + 'px';
             scrollbar.style[transformProperty] = 'translate3d(0px,' + (topAndHeight.t) + 'px,0) scale(' + zoom + ')';
 		};	
 	} else if (helperElem.style[transformProperty] !== undef) {
@@ -515,7 +503,6 @@ FmScroller.prototype.getRenderFunc = function(global, container, content, scroll
 			content.style[transformProperty] = 'translate(' + (-left) + 'px,' + (-top) + 'px) scale(' + zoom + ')';
 
             var topAndHeight = topAndHeightForScrollbar(top); 
-            scrollbar.style.height = topAndHeight.h + 'px';
             scrollbar.style[transformProperty] = 'translate(0px,' + (topAndHeight.t) + 'px) scale(' + zoom + ')';
 		};
 	} else {
@@ -541,14 +528,14 @@ function FmScrollBar(container, content, scrollbarContainer) {
     this.container = container;
     this.content = content;
     this.scrollbarContainer = scrollbarContainer;
-    this.$bar = $('<div class="scrollbar"></div>');
-    this.element = this.$bar.get(0);
-    $(scrollbarContainer).append(this.$bar);
+    this.$barWrapper = $('<div class="scrollbarWrapper"><div class="scrollbar"></div></div>');
+    this.$bar = this.$barWrapper.children('.scrollbar');
+    $(scrollbarContainer).append(this.$barWrapper[0]);
 }
 FmScrollBar.prototype.updateDimensions = function() {
     this.overflow = this.content.offsetHeight > this.container.clientHeight;
     if(!this.overflow)
-        this.hide();
+        this.$bar.hide();
     var h =  this.container.clientHeight
            * (this.scrollbarContainer.clientHeight - FmScrollBar.minTop * 2)
            / this.content.offsetHeight;

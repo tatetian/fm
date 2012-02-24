@@ -284,21 +284,30 @@ body > .loading {
     left: 1.5em;
     right: 1.5em;
 }
-.scrollbar {
+.scrollbarWrapper {
     position: absolute;
-    right: 0;
+    right: 0.375em;
     top: 4px;
+    bottom: 4px;
     width: 0.25em;
-    background-color:  rgba(100, 100, 100, 0.6);
     -webkit-border-radius: 0.125em;
     -moz-border-radius: 0.125em;
     border-radius: 0.125em;
+    overflow: hidden;
     z-index:200;
-    margin-right: 0.375em;
+}
+.scrollbar {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background-color:  rgba(100, 100, 100, 0.6);
+    -webkit-border-radius: 0.25em;
+    -moz-border-radius: 0.25em;
+    border-radius: 0.25em;
 }
 #top .scrollbar{
     background-color:  rgba(200, 200, 200, 0.6);
-    margin-right: 0.25em;
 }
 /**
  * For more information about vertical centering, 
