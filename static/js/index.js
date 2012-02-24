@@ -130,9 +130,9 @@ FmTopPanel.prototype.init = function() {
         that.toggle();
         var tag = $(this).children('h3').html().trim();
         that.cached.$primaryTitle.empty()
-                                   .append('<span class="tag clickable ' + 
-                                                additionalClass[tag] + '">' + 
-                                                tag + '</span>'); 
+                                 .append('<span class="tag clickable ' + 
+                                            additionalClass[tag] + '">' + 
+                                            tag + '</span>'); 
         that.manager.search(tag, null);
     });
     // bottom bar click
@@ -206,17 +206,24 @@ function FmMainPanel(manager) {
         entriesTotal: 0,
         entriesNum: 0 
     };
+    // related to search result
+    this.elements.$moreEntry = 
+        $( '<div class="entry more">' +
+           '<div class="info"><h4><em>More</em></h4></div>' + 
+           '<ul class="buttons">' + 
+           '<li class="button arrow-down-icon"></li>' + 
+           '</ul>' +
+           '</div>' )
+    this.resultHtmlBuilder = new FmResultHtmlBuilder();
+    // scroller for primary view
+    var body = $("body")[0];
     var scrollContainer = $(this.elements.primaryView).get(0);
     var scrollContent = this.elements.$result.get(0);
-    this.scroller = new FmScroller(scrollContainer, scrollContent, $("body")[0]);
-    this.elements.$moreEntry = 
-        $(  '<div class="entry more">' +
-            '<div class="info"><h4><em>More</em></h4></div>' + 
-            '<ul class="buttons">' + 
-            '<li class="button arrow-down-icon"></li>' + 
-            '</ul>' +
-            '</div>' )
-    this.resultHtmlBuilder = new FmResultHtmlBuilder();
+    this.scroller = new FmScroller(scrollContainer, scrollContent, body);
+    // scroller for secondary view
+    var scrollContainer = $(this.elements.secondaryView).get(0);
+    var scrollContent = $(this.elements.secondaryView + ' > .wrapper').get(0);
+    this.scroller2 = new FmScroller(scrollContainer, scrollContent, body);
 }
 FmMainPanel.prototype.init = function() {
     // init variables 
@@ -238,10 +245,12 @@ FmMainPanel.prototype.slideView = function() {
     if(this.state.isPrimaryView) {
         this.state.isPrimaryView = false;
         this.elements.$slides.animate({"left":"-=100%"});
+        this.scroller2.activate();
     }
     else {
         this.state.isPrimaryView = true;
         this.elements.$slides.animate({"left":"+=100%"});
+        this.scroller.activate();
     }
 }
 FmMainPanel.prototype.resize = function() {
@@ -249,6 +258,7 @@ FmMainPanel.prototype.resize = function() {
         this.scroller.updateDimensions();
     }
     else {
+        this.scroller2.updateDimensions();
     }
 }
 FmMainPanel.prototype.clickRightBtn = function(callback) {

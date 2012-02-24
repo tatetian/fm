@@ -182,7 +182,7 @@ h3 {
     font-size: 1.6em;
 }
 h4 {
-    font-size: 1.6em;
+    font-size: 1.25em;
 }
 h5 {
     font-size: 0.75em;
@@ -378,7 +378,7 @@ body > .loading {
     text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
 }
 #top .topbar .secondary .title {
-    line-height: 1.875; 
+    line-height: 2.4; 
 }
 #top .topbar .button {
     position: absolute;
@@ -651,7 +651,7 @@ div.paper-cover {
     width: 275px;
     background: transparent url(../images/paper-cover-shadow.png) center bottom;
     padding: 0 0 8px;
-    margin: 4em auto 1em;
+    margin: 0em auto 1em;
 }
 div.paper-cover > img {
     border: 0;
