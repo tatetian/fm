@@ -507,7 +507,7 @@ FmScrollBar.prototype.updateHeight = function() {
            * (this.scrollbarContainer.clientHeight - FmScrollBar.minTop * 2)
            / this.content.offsetHeight;
     if (h < FmScrollBar.minH)
-        h = FmScrollbar.minH;
+        h = FmScrollBar.minH;
     this.$bar.attr('normalHeight', h+'px');
     this.$bar.height(h);
 }
