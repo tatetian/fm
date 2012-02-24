@@ -103,6 +103,7 @@ function FmTopPanel(manager) {
     var scrollContainer = $(this.elements.content).get(0);
     var scrollContent = $(this.elements.tabs).get(0);
     this.scroller = new FmScroller(scrollContainer, scrollContent, scrollContainer);
+    // 
 }
 FmTopPanel.prototype.init = function() {
     // toggle event
@@ -156,7 +157,15 @@ FmTopPanel.prototype.init = function() {
     });
 }
 FmTopPanel.prototype.toggle = function() {
-    $(this.elements.mainView).slideToggle();
+//    this.animateSlideToggle();
+    //$(this.elements.mainView).slideToggle();
+    if(this.state.expanded) {
+        $(this.elements.mainView).height('0px');
+    }
+    else {
+        var h = 0.95 *　$(window).height() - 48;
+        $(this.elements.mainView).height(h+'px')
+    }
     this.cached.$me.toggleClass("expanded");
     $(this.elements.searchInput).toggle();
     $(this.elements.topbarBtns).toggle();

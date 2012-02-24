@@ -341,8 +341,8 @@ body > .loading {
     border-bottom-left-radius: 1em 1em;
     border-bottom-right-radius: 1em 1em;
     width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.597656) 0px 0px 1em 0px, rgba(0, 0, 0, 0.398438) 0px 0px 1em 0px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.597656) 0px 0px 1em 0px, rgba(0, 0, 0, 0.398438) 0px 0px 1em 0px;
+    /*box-shadow: rgba(0, 0, 0, 0.597656) 0px 0px 1em 0px, rgba(0, 0, 0, 0.398438) 0px 0px 1em 0px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.597656) 0px 0px 1em 0px, rgba(0, 0, 0, 0.398438) 0px 0px 1em 0px;*/
     overflow: hidden;
 }
 #top > .wrapper > .topbar {
@@ -357,7 +357,12 @@ body > .loading {
     border-bottom: 1px solid #B1AEAE;
 }
 #top > .wrapper > .main {
-    display: none;
+    height: 0px;
+    overflow: hidden;
+    display: block;
+    -webkit-transition-property: height;
+    -webkit-transition-duration: 0.4s;
+    -webkit-transition-timing-function: easy-in-out;
 }
 #top > .wrapper > .main > .content {
     position: relative; /* scrollbar requires its container to be relative or absolute position */
