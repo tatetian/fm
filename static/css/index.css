@@ -225,20 +225,18 @@ li.slide.secondary {
     font-style: italic;
     padding-left: 1.45em;
 }
-.category {
-    font-family: Helvetica,Arial;
-    padding-left: 1.45em;
-}
 .title .tag {
     padding-left: 1.2em;   
 }
 .title .category {
     padding-left: 1.2em;
 }
-.category.all {
+.tag.all {
+    font-style: normal;
     background: url(../images/box-w.png) no-repeat left center;
 }
-.category.recent {
+.tag.recent {
+    font-style: normal;
     background: url(../images/time-w.png) no-repeat left center;
 }
 em {
@@ -407,18 +405,21 @@ body > .loading {
 #top .entry {
     padding-left: 0.66666666666em; 
     border-bottom: 1px dotted #B1AEAE;
+    position: relative; 
 }
 #top .entry:last-child {
     border-bottom: none;
 }
 #top .tag {
 }
-/*#top-panel .entry:hover {
+#top .entry.clicked {
     background: url(../images/bg-tile-dark-hover.png) repeat center top; 
     color: #6EB3D1; 
-}*/
-#top .entry h3 span {
-    float: right;
+}
+#top .entry .num {
+    position: absolute;
+    top: 0;
+    right: 0;
     padding-right: 0.5em;
 }
 #top .bottombar li{
@@ -646,7 +647,6 @@ body > #main div.title > h5 > span.nip {
 .result .entry.more.loading.clicked .info {
     background: url(../images/small-loading-b.gif) no-repeat center center;
 }
-
 div.paper-cover {
     width: 275px;
     background: transparent url(../images/paper-cover-shadow.png) center bottom;

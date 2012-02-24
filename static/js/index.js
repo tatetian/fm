@@ -41,6 +41,8 @@ FmManager.prototype.search = function(tag, keywords) {
     // sotre search terms
     this.state.lastSearch.tag = tag;
     this.state.lastSearch.keywords = keywords;
+    // clear previous result
+    this.mainPanel.clearResult();
     // show loading
     this.showLoading();
     // do search
@@ -81,17 +83,20 @@ function FmTopPanel(manager) {
         expanded: false
     };
     this.elements = {
-        me: "#top",
         mainView: "#top > .wrapper > .main",
         searchInput: "#search",
         topbarBtns: "#top .tab .button",
-        titleLbl: "#top .primary .title",
         entry: "#top .entries .entry",
-        $leftBtn: $("#top .slide.secondary .button.arrow-left-icon"),
         tabs: "#top .content .tabs",
         content: "#top .content",
         mainPanel: "#main",
-        bottomBtns: '#top .bottombar .button',
+        bottomBtns: '#top .bottombar .button'
+    };
+    this.cached = {
+        $me: $("#top"),
+        $primaryTitle: $("#top .primary .title"),
+        $secondaryTitle: $("#top .secondary .title"),
+        $leftBtn: $("#top .slide.secondary .button.arrow-left-icon"),
         $slides: $('#top .slide')
     };
     // scroller
@@ -106,7 +111,7 @@ FmTopPanel.prototype.init = function() {
         that.toggle();
         if(e) e.stopPropagation();
     }
-    $(this.elements.titleLbl).click(onToggle);
+    this.cached.$primaryTitle.click(onToggle);
     $(this.elements.mainPanel).click(function(e) {
         if(that.state.expanded)
             onToggle();
@@ -116,6 +121,20 @@ FmTopPanel.prototype.init = function() {
         that.updateHeight();
     });
     this.updateHeight();
+    // click entry event
+    var additionalClass = {
+        All: 'all',
+        Recent: 'recent' 
+    };
+    this.cached.$me.delegate(this.elements.entry, "fmClick", function() {
+        that.toggle();
+        var tag = $(this).children('h3').html().trim();
+        that.cached.$primaryTitle.empty()
+                                   .append('<span class="tag clickable ' + 
+                                                additionalClass[tag] + '">' + 
+                                                tag + '</span>'); 
+        that.manager.search(tag, null);
+    });
     // bottom bar click
     var btn2Tab = {
         'Favourite':    $(this.elements.tabs + ' > .fav'),
@@ -138,7 +157,7 @@ FmTopPanel.prototype.init = function() {
 }
 FmTopPanel.prototype.toggle = function() {
     $(this.elements.mainView).slideToggle();
-    $(this.elements.me).toggleClass("expanded");
+    this.cached.$me.toggleClass("expanded");
     $(this.elements.searchInput).toggle();
     $(this.elements.topbarBtns).toggle();
 
@@ -154,20 +173,20 @@ FmTopPanel.prototype.toggle = function() {
 FmTopPanel.prototype.slideView = function() {
     if(this.state.isPrimaryView) {
         this.state.isPrimaryView = false;
-        this.elements.$slides.animate({"left":"-=100%"});
+        this.cached.$slides.animate({"left":"-=100%"});
     }
     else {
         this.state.isPrimaryView = true;
-        this.elements.$slides.animate({"left":"+=100%"});
+        this.cached.$slides.animate({"left":"+=100%"});
     }
 }
 FmTopPanel.prototype.clickLeftBtn = function(callback) {
-    this.elements.$leftBtn.click(callback);
+    this.cached.$leftBtn.click(callback);
 }
 // TO-DO: better way to animate toggle and decide height
 FmTopPanel.prototype.updateHeight = function() {
     var h = $(window).height();
-    var contentH = 0.9*h - 96;
+    var contentH = 0.95*h - 96;
     $(this.elements.content).height(contentH);
     this.scroller.updateDimensions();
 }
@@ -179,7 +198,7 @@ function FmMainPanel(manager) {
         primaryView: "#main.slider > .slide.primary",
         secondaryView: "#main.slider > .slide.secondary",
         entries: "#main .entry.clickable",
-        result: "#main > .slide.primary > .result",
+        $result: $('#main > .slide.primary > .result'),
         $slides: $('#main .slide')
     };
     this.state = {
@@ -188,7 +207,7 @@ function FmMainPanel(manager) {
         entriesNum: 0 
     };
     var scrollContainer = $(this.elements.primaryView).get(0);
-    var scrollContent = $(this.elements.result).get(0);
+    var scrollContent = this.elements.$result.get(0);
     this.scroller = new FmScroller(scrollContainer, scrollContent, $("body")[0]);
     this.elements.$moreEntry = 
         $(  '<div class="entry more">' +
@@ -238,13 +257,16 @@ FmMainPanel.prototype.clickRightBtn = function(callback) {
             "fmClick", 
             callback);
 }
-FmMainPanel.prototype.showResult = function(result) {
-    var entries = result.entries;
-    var $result = $(this.elements.result);
+FmMainPanel.prototype.clearResult = function() {
     // remove old result
+    var $result = this.elements.$result;
     $result.hide();
     this.elements.$moreEntry.detach();
     $result.children().remove();
+}
+FmMainPanel.prototype.showResult = function(result) {
+    var entries = result.entries;
+    var $result = this.elements.$result;
     // update counter
     this.state.entriesNum = entries.length;
     this.state.entriesTotal = result.total;
@@ -262,7 +284,6 @@ FmMainPanel.prototype.showResult = function(result) {
 }
 FmMainPanel.prototype.showMoreResult = function(moreResult) {
     var entries = moreResult.entries;
-    var $result = $(this.elements.result);
     // update counter
     this.state.entriesNum += entries.length;
     // build more result HTML elements
@@ -271,7 +292,7 @@ FmMainPanel.prototype.showMoreResult = function(moreResult) {
     var $moreResultHtml = $(moreResultHtml);
     this.elements.$moreEntry.detach();
     $moreResultHtml.hide();
-    $result.append($moreResultHtml);
+    this.elements.$result.append($moreResultHtml);
     this.appendMoreEntry();
     // show it
     var that = this;
@@ -281,7 +302,7 @@ FmMainPanel.prototype.showMoreResult = function(moreResult) {
 }
 FmMainPanel.prototype.appendMoreEntry = function() {
     if (this.state.entriesNum < this.state.entriesTotal) {
-        this.elements.$moreEntry.appendTo($(this.elements.result));
+        this.elements.$moreEntry.appendTo(this.elements.$result);
     }
 }
 FmMainPanel.prototype.showLoadingMore = function() {
