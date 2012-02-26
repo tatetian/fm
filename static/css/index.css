@@ -284,30 +284,56 @@ body > .loading {
     left: 1.5em;
     right: 1.5em;
 }
-.scrollbarWrapper {
+.scrollbar {
     position: absolute;
     right: 0.375em;
-    top: 4px;
-    bottom: 4px;
+    top: 8px;
+    bottom: 8px;
     width: 0.25em;
     -webkit-border-radius: 0.125em;
     -moz-border-radius: 0.125em;
     border-radius: 0.125em;
-    overflow: hidden;
     z-index:200;
+
+    display: none;
 }
-.scrollbar {
+.scrollbar > .wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+.scrollbar > .wrapper > .bar {
     position: absolute;
     top: 0px;
     left: 0px;
     width: 100%;
-    background-color:  rgba(100, 100, 100, 0.6);
+    background-color:  #999999;
     -webkit-border-radius: 0.25em;
     -moz-border-radius: 0.25em;
     border-radius: 0.25em;
 }
-#top .scrollbar{
-    background-color:  rgba(200, 200, 200, 0.6);
+.scrollbar > .end {
+    position: absolute;
+    left: 0px;
+    height: 0.25em;
+    width: 100%;
+    background-color:  #999999;
+    -webkit-border-radius: 0.25em;
+    -moz-border-radius: 0.25em;
+    border-radius: 0.25em;
+}
+.scrollbar > .top.end {
+    top : 0px;
+    margin-top: -0.125em;
+}
+.scrollbar > .bottom.end {
+    bottom: 0px;
+    margin-bottom: -0.125em;
+}
+#top .scrollbar .bar{
+    margin: 0.25em 0;
+    background-color:  #AAAAAA;
 }
 /**
  * For more information about vertical centering, 

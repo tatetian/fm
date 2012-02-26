@@ -491,6 +491,7 @@ var Scroller;
 			// Stop deceleration
 			if (self.__isDecelerating) {
 				core.effect.Animate.stop(self.__isDecelerating);
+
 				self.__isDecelerating = false;
 			}
 			
@@ -950,7 +951,6 @@ var Scroller;
 					if (self.__refreshStart) {
 						self.__refreshStart();
 					}
-					
 				} else {
 					
 					self.scrollTo(self.__scrollLeft, self.__scrollTop, true, self.__zoomLevel);
@@ -1038,7 +1038,7 @@ var Scroller;
 						self.__isAnimating = false;
 					}
 					
-					if (self.options.zooming) {
+                    if (self.options.zooming) {
 						self.__computeScrollMax();
 					}
 				};
@@ -1060,7 +1060,7 @@ var Scroller;
 				// Fix max scroll ranges
 				if (self.options.zooming) {
 					self.__computeScrollMax();
-				}
+				} 
 			}
 		},
 

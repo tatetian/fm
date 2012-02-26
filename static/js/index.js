@@ -344,7 +344,9 @@ function FmScroller(container, content, scrollbarContainer) {
     // init scroller
     var render = this.getRenderFunc(window, container, content, 
                                     this.scrollbar.$bar.get(0), 
-                                    scrollbarContainer);
+                                    scrollbarContainer, 
+                                    this.scrollbar.topEnd, 
+                                    this.scrollbar.bottomEnd);
     this.scroller = new Scroller(render, {
         scrollingX: false
     });
@@ -365,7 +367,7 @@ FmScroller.prototype.activate = function() {
 }
 FmScroller.prototype.deactivate = function() {
     this.activated = false;
-    this.scrollbar.$bar.hide();
+    this.scrollbar.$scrollbar.hide();
 }
 FmScroller.prototype.initEventHandler = function() {
     var that = this;
@@ -465,7 +467,10 @@ FmScroller.prototype.updateDimensions = function() {
             this.content.offsetHeight);
     this.scrollbar.updateDimensions();
 }
-FmScroller.prototype.getRenderFunc = function(global, container, content, scrollbar, scrollbarContainer) {
+FmScroller.prototype.getRenderFunc = function(global, container, content, 
+                                              scrollbar, scrollbarContainer,
+                                              scrollbarTopEnd, 
+                                              scrollbarBottomEnd) {
 	var docStyle = document.documentElement.style;
 	
 	var engine;
@@ -492,12 +497,37 @@ FmScroller.prototype.getRenderFunc = function(global, container, content, scroll
 	var perspectiveProperty = vendorPrefix + "Perspective";
 	var transformProperty = vendorPrefix + "Transform";
 
+    var topShown = false;
+    var bottomShown = false;
+
     // special effect for scrollbar    
     function topAndHeightForScrollbar(top) {
         var h = parseInt(scrollbar.getAttribute('normalHeight'));
         var H = scrollbarContainer.clientHeight - 2 * FmScrollBar.minTop;
         var f = H / content.offsetHeight; 
         top *=f;
+        /*if ( top < 0 && !topShown) {
+            scrollbarTopEnd.style.display = 'block';
+            topShown = true;
+            console.debug('overflow top');
+        }
+        else if ( top > (H - scrollbar.offsetHeight) && !bottomShown) {
+            scrollbarBottomEnd.style.display = 'block';
+            bottomShown = true;
+            console.debug('overflow bottom');
+        }
+        else if ( 0 <= top && top <= (H - scrollbar.offsetHeight)){
+            if (topShown) {
+                scrollbarTopEnd.style.display = 'none';
+                topShown = false;
+                console.debug('restore top');
+            }
+            else if (bottomShown) {
+                scrollbarBottomEnd.style.display = 'none';
+                bottomShown = false;
+                console.debug('restore bottom');
+            }
+        }*/
         return {t: top, h:h};
     }
 	if (helperElem.style[perspectiveProperty] !== undef) {
@@ -537,14 +567,19 @@ function FmScrollBar(container, content, scrollbarContainer) {
     this.container = container;
     this.content = content;
     this.scrollbarContainer = scrollbarContainer;
-    this.$barWrapper = $('<div class="scrollbarWrapper"><div class="scrollbar"></div></div>');
-    this.$bar = this.$barWrapper.children('.scrollbar');
-    $(scrollbarContainer).append(this.$barWrapper[0]);
+    this.$scrollbar = $('<div class="scrollbar">' + 
+                            '<div class="top end"></div>' + 
+                            '<div class="wrapper"><div class="bar"></div></div>' + 
+                            '<div class="bottom end"></div></div>');
+    this.$bar = this.$scrollbar.find('.bar');
+    this.topEnd = this.$scrollbar.children('.top.end').get(0);
+    this.bottomEnd = this.$scrollbar.children('.bottom.end').get(0);
+    $(scrollbarContainer).append(this.$scrollbar[0]);
 }
 FmScrollBar.prototype.updateDimensions = function() {
     this.overflow = this.content.offsetHeight > this.container.clientHeight;
     if(!this.overflow)
-        this.$bar.hide();
+        this.$scrollbar.hide();
     var h =  this.container.clientHeight
            * (this.scrollbarContainer.clientHeight - FmScrollBar.minTop * 2)
            / this.content.offsetHeight;
@@ -554,14 +589,16 @@ FmScrollBar.prototype.updateDimensions = function() {
     this.$bar.height(h);
 }
 FmScrollBar.prototype.show = function() {
-    if(this.overflow)
-        this.$bar.fadeIn();
+    if(this.overflow) {
+        this.$scrollbar.fadeIn();
+    }
 }
 FmScrollBar.prototype.hide = function() {
-    this.$bar.fadeOut();
+//    this.topEnd.style.display = 'none';
+//    this.bottomEnd.style.display = 'none';
+    this.$scrollbar.fadeOut();
 }
-FmScrollBar.minH = 4;
-FmScrollBar.minTop = 4;
+FmScrollBar.minTop = 8;
 /**************************Web Service**************************************/
 function FmWebService() {
     this.url = {
