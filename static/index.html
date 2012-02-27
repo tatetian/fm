@@ -48,10 +48,10 @@
                     <ul class="slider">
                         <li class="slide primary">
                         <!-- <div class="button left search-icon clickable"></div> -->
-                            <input id="search" type="text" size="200" />
+                            <input class="search" type="text" size="200" autocomplete="off"/>
 
                             <h2 class="title"><span class="tag all clickable">All</span></h2>
-                            <div class="button right plus-icon clickable"></div>
+                            <div class="button right upload-icon clickable"></div>
                         </li>
                         <li class="slide secondary">
                             <div class="button left arrow-left-icon clickable"></div>
@@ -84,6 +84,11 @@
                             </li>
                             <li class="tab tags">
                                 <ul class="entries">
+                                    <li class="entry">
+                                        <div class="wrapper">
+                                            <input class="search" type="text" placeholder="Enter tags, separated by comma" autocomplete="off"/>
+                                        </div>
+                                    </li>
                                     <li class="entry clickable">
                                         <h3 class="tag">column store</h3><h3 class="num">1</h3>
                                     </li>

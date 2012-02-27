@@ -84,7 +84,7 @@ function FmTopPanel(manager) {
     };
     this.elements = {
         mainView: "#top > .wrapper > .main",
-        searchInput: "#search",
+        searchInput: "#top .topbar .search",
         topbarBtns: "#top .tab .button",
         entry: "#top .entries .entry",
         tabs: "#top .content .tabs",
@@ -167,7 +167,7 @@ FmTopPanel.prototype.toggle = function() {
         $(this.elements.mainView).height(h+'px')
     }
     this.cached.$me.toggleClass("expanded");
-    $(this.elements.searchInput).toggle();
+    //$(this.elements.searchInput).toggle();
     $(this.elements.topbarBtns).toggle();
 
     this.state.expanded = !this.state.expanded;
@@ -197,6 +197,10 @@ FmTopPanel.prototype.updateHeight = function() {
     var h = $(window).height();
     var contentH = 0.95*h - 96;
     $(this.elements.content).height(contentH);
+    if (this.state.expanded) {
+        var h = contentH + 48;
+        $(this.elements.mainView).height(h+'px')
+    }
     this.scroller.updateDimensions();
 }
 /******************************FmMainPanel*******************************/
