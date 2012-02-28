@@ -80,11 +80,10 @@ function FmTopPanel(manager) {
     this.manager = manager;
     this.state = {
         isPrimaryView: true,
-        expanded: false
+        expanded: false,
+        currentTab: 'Favourite'
     };
     this.elements = {
-        mainView: "#top > .wrapper > .main",
-        searchInput: "#top .topbar .search",
         topbarBtns: "#top .tab .button",
         entry: "#top .entries .entry",
         tabs: "#top .content .tabs",
@@ -96,14 +95,20 @@ function FmTopPanel(manager) {
         $me: $("#top"),
         $primaryTitle: $("#top .primary .title"),
         $secondaryTitle: $("#top .secondary .title"),
-        $leftBtn: $("#top .slide.secondary .button.arrow-left-icon"),
-        $slides: $('#top .slide')
+        $slides: $('#top .slide'),
+        $mainView: $('#top > .wrapper > .main'),
+        btns: {
+            $search: $('#top .topbar .search'),
+            $left: $('#top .slide.secondary .button.arrow-left-icon'),
+            $upload: $('#top .topbar .upload-icon.button'),
+            $editTag: $('#top .topbar .slide.primary .button.edit-icon'),
+            $addTag: $('#top .topbar .slide.primary .button.plus-icon')
+        }
     };
     // scroller
     var scrollContainer = $(this.elements.content).get(0);
     var scrollContent = $(this.elements.tabs).get(0);
     this.scroller = new FmScroller(scrollContainer, scrollContent, scrollContainer);
-    // 
 }
 FmTopPanel.prototype.init = function() {
     // toggle event
@@ -147,6 +152,7 @@ FmTopPanel.prototype.init = function() {
     $(this.elements.bottomBtns).click(function(e) {
         // tab
         var tabName = $(this).text().trim();
+        that.state.currentTab = tabName;
         currentTab.removeClass('current');
         currentTab = btn2Tab[tabName];
         currentTab.addClass('current');
@@ -154,30 +160,47 @@ FmTopPanel.prototype.init = function() {
         currentBtn.removeClass('current');
         currentBtn = $(this);
         currentBtn.addClass('current'); 
+        // toggle topbar buttons
+        if(tabName == 'Favourite' || tabName == 'System') {
+            that.cached.btns.$addTag.hide();
+            that.cached.btns.$editTag.hide();
+        } 
+        else if(tabName == 'Tags') {
+            that.cached.btns.$addTag.show();
+            that.cached.btns.$editTag.show();
+        }
     });
 }
 FmTopPanel.prototype.toggle = function() {
-//    this.animateSlideToggle();
-    //$(this.elements.mainView).slideToggle();
-    if(this.state.expanded) {
-        $(this.elements.mainView).height('0px');
-    }
-    else {
-        var h = 0.95 *　$(window).height() - 48;
-        $(this.elements.mainView).height(h+'px')
-    }
-    this.cached.$me.toggleClass("expanded");
-    //$(this.elements.searchInput).toggle();
-    $(this.elements.topbarBtns).toggle();
-
     this.state.expanded = !this.state.expanded;
 
-    if(this.state.expanded) {
+    this.cached.$me.toggleClass("expanded");
+
+    if(this.state.expanded) {//expanding
+        // toggle btns
+        this.cached.btns.$search.hide();
+        this.cached.btns.$upload.hide();
+        if(this.state.currentTab == 'Tags') {
+            this.cached.btns.$addTag.show();
+            this.cached.btns.$editTag.show();
+        }
+        // animate toggle
+        var h = 0.95 *　$(window).height() - 48;
+        this.cached.$mainView.height(h+'px')
+        // activate scroller of top panel
         this.scroller.activate();
     }
     else {
+        // activate scroller of main panel
         this.manager.mainPanel.scroller.activate();
-    }
+        // animate toggle
+        this.cached.$mainView.height('0px');
+        // toggle btns
+        this.cached.btns.$editTag.hide();
+        this.cached.btns.$addTag.hide();
+        this.cached.btns.$search.show();
+        this.cached.btns.$upload.show();
+   }
 }
 FmTopPanel.prototype.slideView = function() {
     if(this.state.isPrimaryView) {
@@ -190,7 +213,7 @@ FmTopPanel.prototype.slideView = function() {
     }
 }
 FmTopPanel.prototype.clickLeftBtn = function(callback) {
-    this.cached.$leftBtn.click(callback);
+    this.cached.btns.$left.click(callback);
 }
 // TO-DO: better way to animate toggle and decide height
 FmTopPanel.prototype.updateHeight = function() {
@@ -199,7 +222,7 @@ FmTopPanel.prototype.updateHeight = function() {
     $(this.elements.content).height(contentH);
     if (this.state.expanded) {
         var h = contentH + 48;
-        $(this.elements.mainView).height(h+'px')
+        this.cached.$mainView.height(h+'px')
     }
     this.scroller.updateDimensions();
 }

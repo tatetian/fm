@@ -279,6 +279,9 @@ body > .loading {
 #controls {
     height: 8.7%;
 }
+.hide {
+    display: none;
+}
 .panel {
     top: 0;
     left: 1.5em;
