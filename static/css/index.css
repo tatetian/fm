@@ -9,7 +9,6 @@ span.blue {
 }
 body {
     background: #E1E1E1 url(../images/hatch.png) repeat fixed;
-    background: #E1E1E1 url(../images/hatch.png) repeat fixed;
     font: normal 100% ClarendonFSLight, Georgia, Helvetica, Arial;
 }
 body > .container {
@@ -74,12 +73,16 @@ body > .container > .wrapper {
     font-family: ClarendonFSBold,Georgia,sans-serif;
     text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
 }
+.logo {
+    font-family: ClarendonFSBold,Georgia,sans-serif;
+    text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
+}
 .nip-large {
     height: 10px;
     background: url(../images/large-nip.png) no-repeat center;
 }
 h2 {
-    font: 54px/57px Georgia, sans-serif;
+    font-size: 54px;
     color: rgba(0, 0, 0, 0.77);
 }
 h3 {
@@ -94,7 +97,7 @@ h3 {
     line-height: 1.2;
 }
 #signup {
-    padding: 20px 0;
+    padding: 15px 0;
     width: 580px;
 }
 @font-face{
