@@ -318,7 +318,12 @@ FmMainPanel.prototype.showResult = function(result) {
     this.state.entriesTotal = result.total;
     // build new result HTML elements
     var resultHtml = this.resultHtmlBuilder.newHtml(entries);
-    $result.append('<div style="width:100%;height:4em;"></div>');
+    $result.append('<div style="width: 100%; padding-top: 3.5em;"></div>');
+    $result.append('<div class="message"><p>' +  
+                        '<span>Uploading <span class="file">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.pdf</span>' + 
+                        '<span class="progress"></span></span>' +  
+                   '</p></div>');
+    $result.append('<div style="width: 100%; padding-bottom: 0.5em;">')
     $result.append(resultHtml);
     // toggle more indicator
     this.appendMoreEntry();
