@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <script src="../date-constants.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            function writeDate(name, date) {
+                document.write('<p>' +  name + ':&nbsp' + new Date(date) + '</p>');
+            };
+            writeDate('now', new Date());
+            writeDate('today', DateConstants.TODAY);
+            writeDate('yesterday', DateConstants.YESTERDAY);
+            writeDate('this week', DateConstants.THIS_WEEK);
+            writeDate('last week', DateConstants.LAST_WEEK);
+            writeDate('this month', DateConstants.THIS_MONTH);
+            writeDate('last month', DateConstants.LAST_MONTH);
+            writeDate('this year', DateConstants.THIS_YEAR);
+        </script>
+    </body>
+</html>
