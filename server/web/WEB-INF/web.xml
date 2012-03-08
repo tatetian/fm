@@ -86,6 +86,22 @@
 
          You can define any number of servlets, including zero.
     -->
+    <servlet>
+      <servlet-name>upload</servlet-name>
+      <description>
+        This servlet deals with document file upload. 
+      </description>
+      <servlet-class>com.feastmind.ws.UploadServlet</servlet-class>
+      <init-param>
+        <param-name>name</param-name>
+        <param-value>value</param-value>
+      </init-param>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>upload</servlet-name>
+      <url-pattern>/ws/upload</url-pattern>
+    </servlet-mapping>
+
 
  <!--   <servlet>
       <servlet-name>controller</servlet-name>

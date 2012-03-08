@@ -2,6 +2,7 @@
 function FmManager() {
     this.topPanel = new FmTopPanel(this);
     this.mainPanel = new FmMainPanel(this);
+    this.uploader = new FmUploader(this);
     this.webService = new FmWebService(this);
 
     this.state = {
@@ -18,6 +19,7 @@ FmManager.prototype.init = function() {
     // init components
     this.topPanel.init();
     this.mainPanel.init();
+    this.uploader.init();
     // init slide event
     var that = this;
     function slideView(e) {
@@ -319,10 +321,6 @@ FmMainPanel.prototype.showResult = function(result) {
     // build new result HTML elements
     var resultHtml = this.resultHtmlBuilder.newHtml(entries);
     $result.append('<div style="width: 100%; padding-top: 3.5em;"></div>');
-    $result.append('<div class="message"><p>' +  
-                        '<span>Uploading <span class="file">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.pdf</span>' + 
-                        '<span class="progress"></span></span>' +  
-                   '</p></div>');
     $result.append('<div style="width: 100%; padding-bottom: 0.5em;">')
     $result.append(resultHtml);
     // toggle more indicator
@@ -775,6 +773,68 @@ FmResultHtmlBuilder.prototype.toHtml = function(entries) {
         htmlToInsert.push('</div>'); 
     }
     return htmlToInsert.join('');
+}
+/*******************************Uploader*************************************/
+function FmUploader(manager) {
+    this.manager = manager;
+    this.elements = {
+        uploadBtn: 'upload-btn',
+    };
+    this.state = {
+        uploading: false
+    }
+    this.uploader = new plupload.Uploader({
+        runtimes : 'html5,flash,html4',
+        browse_button : this.elements.uploadBtn,
+        drop_element: 'main',
+        max_file_size : '10mb',
+        url : '/ws/upload',
+        flash_swf_url : '/plupload/plupload.flash.swf',
+        filters : [
+            {title : "PDF files", extensions : "pdf"}
+        ]
+    });
+}
+FmUploader.prototype.init = function() {
+    var that = this;
+
+    this.uploader.bind('Init', function(up, params) {
+        console.log('init');
+    });
+
+    this.uploader.bind('FilesAdded', function(up, files) {
+        if (files.length > 0) {
+            var file = files[0];
+            var filename  = file.name;
+            that.state.uploading = file.id;
+            that.uploadingMessage(filename);
+            /*$result.append('<div class="message"><p>' +  
+                                '<span>Uploading <span class="file">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.pdf</span>' + 
+                        '<span class="progress"></span></span>' +  
+                   '</p></div>');
+      */
+        }
+    });
+
+    this.uploader.bind('UploadProgress', function(up, file) {
+        if (that.state.uploading = file.id) {
+            console.log('uploadprogress');
+            that.progressMessage(file.percent);
+        }
+    });
+
+    this.uploader.bind('QueueChanged', function() {
+        console.log('queuechanged');
+    });
+
+    this.uploader.bind('UploadComplete', function(up, file) {
+        if (that.state.uploading == file.id) {
+            that.state.uploading = false;
+            that.completeMessage(fileName);
+        }
+    });
+
+    this.uploader.init();
 }
 /******************************Initialization********************************/
 // disable text selection in IE by setting attribute unselectable to true

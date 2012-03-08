@@ -47,7 +47,7 @@
      set to the current working directory.
 -->
 
-<project name="FeastMind" default="compile" basedir=".">
+<project name="fm" default="compile" basedir=".">
 
 
 <!--
@@ -138,7 +138,9 @@
     <fileset dir="${catalina.home}/lib">
       <include name="*.jar"/>
     </fileset>
-
+    <fileset dir="${catalina.home}/bin">
+      <include name="tomcat-juli.jar"/>
+    </fileset>
   </path>
 
 
