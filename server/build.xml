@@ -457,6 +457,13 @@
 
   </target>
 
+<!-- ================= Tomcat-start Target ================================ -->
+    <target name="tomcat-start">
+        <exec executable = "${catalina.home}/bin/startup.sh"/> 
+    </target>
 
+<!-- ================= Tomcat-stop Target ================================ -->
+    <target name="tomcat-stop">
+        <exec executable = "${catalina.home}/bin/shutdown.sh"/> 
+    </target>
 </project>
-
