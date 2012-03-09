@@ -781,15 +781,16 @@ function FmUploader(manager) {
         uploadBtn: 'upload-btn',
     };
     this.state = {
-        uploading: false
+        uploading: false,
+        progress: 0
     }
     this.uploader = new plupload.Uploader({
         runtimes : 'html5,flash,html4',
         browse_button : this.elements.uploadBtn,
         drop_element: 'main',
         max_file_size : '10mb',
-        url : '/ws/upload',
-        flash_swf_url : '/plupload/plupload.flash.swf',
+        url : 'ws/upload',
+        flash_swf_url : 'plupload/plupload.flash.swf',
         filters : [
             {title : "PDF files", extensions : "pdf"}
         ]
@@ -797,7 +798,9 @@ function FmUploader(manager) {
 }
 FmUploader.prototype.init = function() {
     var that = this;
-
+    
+    this.uploader.init();
+    
     this.uploader.bind('Init', function(up, params) {
         console.log('init');
     });
@@ -807,18 +810,14 @@ FmUploader.prototype.init = function() {
             var file = files[0];
             var filename  = file.name;
             that.state.uploading = file.id;
-            that.uploadingMessage(filename);
-            /*$result.append('<div class="message"><p>' +  
-                                '<span>Uploading <span class="file">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.pdf</span>' + 
-                        '<span class="progress"></span></span>' +  
-                   '</p></div>');
-      */
+            that.startMessage(filename);
+            that.uploader.start();
         }
     });
 
     this.uploader.bind('UploadProgress', function(up, file) {
         if (that.state.uploading = file.id) {
-            console.log('uploadprogress');
+            console.log('uploadprogress' + file.percent);
             that.progressMessage(file.percent);
         }
     });
@@ -833,8 +832,33 @@ FmUploader.prototype.init = function() {
             that.completeMessage(fileName);
         }
     });
-
-    this.uploader.init();
+}
+FmUploader.prototype.startMessage = function(filename) {
+	this.state.progress = 0;
+	
+	$result = this.manager.mainPanel.elements.$result;
+	$first = $result.children(':first');
+	$first.append(
+		'<div class="message"><p>' +  
+			'<span><span class="file"> Uploading ' + filename + '</span>' + 
+				'<span class="progress"></span></span>' +  
+		'</p></div>');
+}
+FmUploader.prototype.progressMessage = function(percent) {
+	if ( this.state.progress >= percent )
+		return;
+	this.state.progress = percent;
+	
+	$result = this.manager.mainPanel.elements.$result;
+	$progress = $result.find('.progress');
+	$progress.animate({'width': percent+'%'});
+}
+FmUploader.prototype.completeMessage = function(filename) {
+	$result = this.manager.mainPanel.elements.$result;
+	$file = $result.find('.file');
+	$file.html('Uploaded ' + filename);
+	$message = $result.find('.message');
+	$message.delay(1000).fadeOut(400, function() {$message.detach();});
 }
 /******************************Initialization********************************/
 // disable text selection in IE by setting attribute unselectable to true
