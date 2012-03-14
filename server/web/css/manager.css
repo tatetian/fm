@@ -182,7 +182,7 @@ h3 {
     font-size: 1.6em;
 }
 h4 {
-    font-size: 1.5em;
+    font-size: 1.4em;
 }
 h5 {
     font-size: 0.75em;
@@ -241,6 +241,7 @@ li.slide.secondary {
 }
 em {
     font-family: ClarendonFSBold,Georgia,sans-serif;
+    font-weight: bold;
 }
 body > .loading {
     position: fixed;
@@ -738,6 +739,14 @@ body > #main div.title > h5 > span.nip {
 }
 .result .entry.more.loading.clicked .info {
     background: url(../images/small-loading-b.gif) no-repeat center center;
+}
+.left-column {
+    float: left;
+    width: 65%;
+}
+.right-column {
+    float: right;
+    width: 35%;
 }
 div.paper-cover {
     width: 275px;
