@@ -221,23 +221,27 @@ li.slide.secondary {
 }
 .tag {
     background: url(../images/tag-w.png) no-repeat 0.15em center;
-    font-family: Helvetica,Arial;
+    font-family: Helvetica,楷体,Arial, serif;
     font-style: italic;
     padding-left: 1.45em;
 }
 .title .tag {
     padding-left: 1.2em;   
 }
-.title .category {
-    padding-left: 1.2em;
-}
 .tag.all {
+    font-family: Arial, sans-serif;
     font-style: normal;
     background: url(../images/box-w.png) no-repeat left center;
 }
 .tag.recent {
+    font-family: Arial, sans-serif;
     font-style: normal;
     background: url(../images/time-w.png) no-repeat left center;
+}
+.tag.shared {
+    font-family: Arial, 宋体;
+    font-style: normal;
+    background: url(../images/heart-w.png) no-repeat left center;
 }
 em {
     font-family: ClarendonFSBold,Georgia,sans-serif;
@@ -409,6 +413,7 @@ body > .loading {
     white-space: nowrap; 
     overflow: hidden;
     margin: 0 96px; /*leave space for buttons at both sides*/
+    line-height: 1.9em;
 }
 .title {
     text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
@@ -676,7 +681,7 @@ body > #main  div.title > h5{
     position: relative;
     width: 8em;
     margin: 0 auto;
-    line-height: 1.2;
+    line-height: 1.4;
 }
 body > #main div.title > h5 > span.nip {
     background: url(../images/nips.png) no-repeat center top;
@@ -684,7 +689,7 @@ body > #main div.title > h5 > span.nip {
     width: 100%;
     height: 0.5em;        /* 6px = 0.5 * 12 = 0.5em */
     left: 0;
-    top: 1.2em;
+    top: 1.4em;
 }
 .result .entry {    
     line-height: 1.1;
@@ -705,12 +710,10 @@ body > #main div.title > h5 > span.nip {
     color: #6EB3D1; 
 }
 .result .entry .info {
-    margin-right: 3em;
+    margin: 0 2.75em;
 }
 .result .entry .buttons {
     position: absolute;
-    right: 0;
-    top: 0;
     /*margin: -1.5em 0 0 0;*/
     height: 100%;
     width: 2.75em;
@@ -719,16 +722,28 @@ body > #main div.title > h5 > span.nip {
 /*    border-top-right-radius: 1em 1em;
     border-bottom-right-radius: 1em 1em;*/
 }
-.result .entry.clicked .buttons {
+.result .entry .buttons.left {
+    left: 0;
+    top: 0;
+}
+.result .entry .buttons.right {
+    right: 0;
+    top: 0;
+}
+/*.result .entry.clicked .buttons {
     display: block;
     background: url(../images/bg-tile-blue.png) repeat center top;
-}
+}*/
 .result .entry .buttons .button {
     width: 100%;
     height: 100%;
 }
 .result .entry p{
-    color: #B1AEAE;
+/*    color: #B1AEAE;*/
+    color: #9B9797;
+}
+.result .entry.clicked p {
+    color: #8BA6B1;
 }
 .result .entry span.tag {
     background: url(../images/tag-small-light.png) no-repeat;
@@ -871,9 +886,9 @@ div.paper-cover > img {
 .arrow-right-icon {
     background: url(../images/arrow-right-d-tiny.png) no-repeat center center;
 }
-.clicked .arrow-right-icon {
+/*.clicked .arrow-right-icon {
     background: url(../images/arrow-right-w-tiny.png) no-repeat center center;
-}
+}*/
 .arrow-down-icon {
     background: url(../images/arrow-down-d-tiny.png) no-repeat center center;
 }
@@ -882,4 +897,7 @@ div.paper-cover > img {
 }
 .upload-icon {
     background: url(../images/upload.png) no-repeat center center;
+}
+.heart-hollow-icon {
+    background: url(../images/heart-hollow2.png) no-repeat center center;
 }
