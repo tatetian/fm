@@ -1,0 +1,116 @@
+a {
+    text-decoration: none;
+}
+a {
+    color: rgba(0, 0, 0, 0.8);
+}
+span.blue {
+    color: #6EB3D1;
+}
+body {
+    background: #E1E1E1 url(../images/hatch.png) repeat fixed;
+    font: normal 100% ClarendonFSLight, Georgia, Helvetica, Arial;
+}
+body > .container {
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    background-image: url(../images/horizontal.png);
+    background-repeat: repeat;
+    background-position: top;
+}
+body > .container > .wrapper {
+    width: 987px;
+    background-image: url(../images/vertical-1.png);
+    background-repeat: repeat-y;
+    color: rgba(0, 0, 0, 0.8);
+    margin: 0 auto; 
+    min-height: 600px;   
+}
+.nav {
+    width: 405px;
+    margin: 0 auto 50px auto;
+    font: 12px/14px BryantMedium, Helvetica, Arial;
+    height: 50px;
+}
+.nav-button {
+    background-color: rgba(255, 255, 255, 0.5);
+    -moz-border-radius: 0px 0px 8px 8px;
+    border-radius: 0px 0px 8px 8px;
+    width: 115px;
+    padding-top: 12px;
+    padding-bottom: 11px;
+    padding-right: 0;
+    float: left;
+}
+.nav a:first-child .nav-button{
+    margin-right: 175px;
+}
+.nav-button:hover {
+    background-color: rgba(110, 179, 209, 0.6);
+    -webkit-transition: background-color 0.15s ease-in-out;
+}
+.shadow-box {
+    -moz-box-shadow: 0 19px rgba(110, 179, 209, 0.6);
+    -webkit-box-shadow: 0 19px rgba(110, 179, 209, 0.6);
+    box-shadow: 0 19px rgba(110, 179, 209, 0.6);
+    color: rgba(255, 255, 255, 1.0);
+    background-color: rgba(0, 0, 0, 0.77);
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+#logo {
+    width: 405px;
+    padding-top: 19px;
+    padding-bottom: 28px;
+    cursor: pointer;
+}
+#logo > h1 {
+    font-size: 54px;
+    font-family: ClarendonFSBold,Georgia,sans-serif;
+    text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
+}
+.logo {
+    font-family: ClarendonFSBold,Georgia,sans-serif;
+    text-shadow: 0 0 1px rgba(255,255,255, 0.75);   /*  title glow */
+}
+.nip-large {
+    height: 10px;
+    background: url(../images/large-nip.png) no-repeat center;
+}
+h2 {
+    font-size: 54px;
+    color: rgba(0, 0, 0, 0.77);
+}
+h3 {
+    font-size: 16px;
+    font-family: BryantMedium, Helvetica, Arial;
+    text-transform: uppercase;
+}
+#headline {
+    margin-bottom: 66px;
+    margin-top: 58px;
+    width: 100%;
+    line-height: 1.2;
+}
+#signup {
+    padding: 15px 0;
+    width: 580px;
+}
+@font-face{
+    font-family: 'ClarendonFSLight';
+    src: url('../fonts/clarendonfs-light.eot?#iefix') format('embedded-opentype'),
+/*         url('/fonts/clarendonfs-light.woff') format('woff'),*/
+         url('../fonts/clarendonfs-light.ttf') format('truetype')/*,
+         url('/fonts/clarendonfs-light.svg#webfontI7XVJ1Zh') format('svg')*/
+}
+@font-face{
+    font-family: 'ClarendonFSBold';
+    src: url('../fonts/clarendonfs-bold.eot?#iefix') format('embedded-opentype'),
+/*         url('/fonts/clarendonfs-bold.woff') format('woff'),*/
+         url('../fonts/clarendonfs-bold.ttf') format('truetype')/*,
+         url('/fonts/clarendonfs-bold.svg#webfontI7XVJ1Zh') format('svg')*/
+}
+

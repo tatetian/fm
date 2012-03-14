@@ -1,0 +1,8 @@
+1. Configuration for the first time
+
+For the custom Tomcat task of Ant to work properly, you need to copy 
+        bin/tomcat-juli.jar
+        lib/catalina-ant.jar
+        lib/tomcat-util.jar
+        lib/tomcat-coyote.jar
+to Ant's lib directory(/usr/share/ant/lib in Ubuntu).
