@@ -811,7 +811,14 @@ FmUploader.prototype.init = function() {
             var filename  = file.name;
             that.state.uploading = file.id;
             that.startMessage(filename);
-            that.uploader.start();
+            //that.uploader.start();
+            setTimeout(function() {
+                that.uploader.trigger('UploadProgress', {id: file.id, percent: 50});
+            }, 500);
+            setTimeout(function() {
+                that.uploader.trigger('UploadProgress', {id: file.id, percent: 100});
+                that.uploader.trigger('UploadComplete', file);
+            }, 1000);
         }
     });
 
@@ -829,7 +836,7 @@ FmUploader.prototype.init = function() {
     this.uploader.bind('UploadComplete', function(up, file) {
         if (that.state.uploading == file.id) {
             that.state.uploading = false;
-            that.completeMessage(fileName);
+            that.completeMessage(file.name);
         }
     });
 }
@@ -850,8 +857,10 @@ FmUploader.prototype.progressMessage = function(percent) {
 	this.state.progress = percent;
 	
 	$result = this.manager.mainPanel.elements.$result;
+    $message = $result.find('.message > p > span > span');
 	$progress = $result.find('.progress');
-	$progress.animate({'width': percent+'%'});
+    console.debug('width='+$message.width());
+	$progress.animate({'width': percent / 100.0 * ( $message.width()+64-8 ) });
 }
 FmUploader.prototype.completeMessage = function(filename) {
 	$result = this.manager.mainPanel.elements.$result;
