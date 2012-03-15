@@ -10,7 +10,7 @@
 	<head>
 		<meta charset="utf-8"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-		<title>FeastMind Demo -- 飨思（演示版）</title>
+		<title>FeastMind Demo</title>
 		
 		<!-- Please don't add "maximum-scale=1" here. It's bad for accessibility. -->
 		<meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -41,7 +41,7 @@
 			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
             <![endif]-->
 	</head>
-	<body lang="zh-CN">
+	<body lang="en">
 	    <!--<div id="loadbar">
         </div>-->
         <div class="loading">
@@ -54,13 +54,13 @@
                         <!-- <div class="button left search-icon clickable"></div> -->
                             <input class="search" type="text" size="200" autocomplete="off"/>
                             <div class="button left plus-icon clickable hide"></div>
-                            <h3 class="title"><span class="tag all clickable">全部文献</span></h2>
+                            <h2 class="title"><span class="tag all clickable">All</span></h2>
                             <div id="upload-btn" class="button right upload-icon clickable"></div>
                             <div class="button right edit-icon clickable hide"></div>
                         </li>
                         <li class="slide secondary">
                             <div class="button left arrow-left-icon clickable"></div>
-                            <h4 class="title unselectable"><span><em>我国大学科技园最新发展动态、评价及建议——以中关村地区为例</em></span></h4>
+                            <h4 class="title unselectable"><span><em>Zephyr: Live Migration in Shared Nothing Databases for Elastic Cloud Platforms</em></span></h4>
                             <div class="button right edit-icon clickable"></div>
                         </li>
                     </ul>
@@ -74,22 +74,16 @@
                             <li class="tab fav current">
                                 <ul class="entries">
                                     <li class="entry clickable">
-                                        <h3 class="tag all">全部文献</h3><h3 class="num">3</h3>
+                                        <h3 class="tag all">All</h3><h3 class="num">150</h3>
                                     </li>
                                     <li class="entry clickable">
-                                        <h3 class="tag recent">最近阅读</h3><h3 class="num">3</h3>
+                                        <h3 class="tag recent">Recent</h3><h3 class="num">10</h3>
                                     </li>
                                     <li class="entry clickable">
-                                        <h3 class="tag shared">好友分享</h3><h3 class="num">10</h3>
+                                        <h3 class="tag">column store</h3><h3 class="num">1</h3>
                                     </li>
                                     <li class="entry clickable">
-                                        <h3 class="tag">创业</h3><h3 class="num">3</h3>
-                                    </li>
-                                    <li class="entry clickable">
-                                        <h3 class="tag">教育</h3><h3 class="num">1</h3>
-                                    </li>               
-                                    <li class="entry clickable">
-                                        <h3 class="tag">大学科技园</h3><h3 class="num">1</h3>
+                                        <h3 class="tag">VLDB</h3><h3 class="num">0</h3>
                                     </li>               
                                 </ul>
                             </li>
@@ -97,18 +91,15 @@
                                 <ul class="entries">
                                     <li class="entry">
                                         <div class="wrapper">
-                                            <input class="search" type="text" placeholder="输入标签，以逗号分隔" autocomplete="off"/>
+                                            <input class="search" type="text" placeholder="Enter tags, separated by comma" autocomplete="off"/>
                                         </div>
                                     </li>
                                     <li class="entry clickable">
-                                        <h3 class="tag">创业</h3><h3 class="num">3</h3>
+                                        <h3 class="tag">column store</h3><h3 class="num">1</h3>
                                     </li>
                                     <li class="entry clickable">
-                                        <h3 class="tag">大学科技园</h3><h3 class="num">1</h3>
-                                    </li>
-                                    <li class="entry clickable">
-                                        <h3 class="tag">教育</h3><h3 class="num">1</h3>
-                                    </li>               
+                                        <h3 class="tag">VLDB</h3><h3 class="num">0</h3>
+                                    </li> 
                                 </ul>
                             </li>
                             <li class="tab system">
@@ -118,17 +109,17 @@
                     <ul class="bottombar">
                         <li>
                             <div class="button fav-icon clickable current">
-                                <p>常用</p>
+                                <p>Favourite</p>
                             </div>
                         </li>
                         <li>
                             <div class="button a2z-icon clickable">
-                                <p>标签</p>
+                                <p>Tags</p>
                             </div>
                         </li>
                         <li>
                             <div class="button rows-icon clickable">
-                                <p>系统</p>
+                                <p>System</p>
                             </div>
                         </li>
                     </ul>
@@ -157,21 +148,35 @@
                         <div class="paper-cover">
                             <img class="paper-cover" src="images/sample-paper-cover.png">
                         </div>
-                        <div class="title"><h5>摘要<span class="nip"></span></h5></div>
-                        <p>以中关村地区的大学科技园为例,在广泛深入实地调研的基础上,分析我国大学科技园的最新发展动态,包括基本建设情况和发展模式等;评价了大学科技园在推动区域创新和创业中的作用,剖析了大学科技园目前面临的主要问题,对大学科技园的发展提出了针对性建议. </p>
+                        <div class="title"><h5>Abstract<span class="nip"></span></h5></div>
+                        <p><span class="first-letter"><span>P</span></span>rior work has shown dramatic acceleration for various data-base operations on GPUs, but only using primitives that are not part of conventional database languages such as SQL. This paper implements a subset of the SQLite virtual ma- chine directly on the GPU, accelerating SQL queries by ex- ecuting in parallel on GPU hardware. This dramatically reduces the effort required to achieve GPU acceleration by avoiding the need for database programmers to use new pro-gramming languages such as CUDA or modify their pro-grams to use non-SQL libraries.</p>
 
-                        <div class="title"><h5>参考文献<span class="nip"></span></h5></div>
-                        <p>
-                        [1] 张帏.  中关村留学人员创业企业发展的瓶颈调研[J]. 中国软科学. 2007(08) <br />
-                        [2] 王伟,康建辉.  大学科技园区发展中的高校资源配置研究[J]. 科学学与科学技术管理. 2005(08)<br />
-                        [3] 陈静远,黄长春,左亮.  中国大学科技园与英国科技园建设和管理模式研究[J]. 科学学与科学技术管理. 2005(08)<br />
-                        [4] 夏劲,涂晶.  论设立大学科技园的标准[J]. 科学学研究. 2005(02)<br />
-                        [5] 林嵩,张帏,林强.  高科技创业企业资源整合模式研究[J]. 科学学与科学技术管理. 2005(03)<br />
-                        [6] 林嵩,张帏,邱琼.  创业过程的研究评述及发展动向[J]. 南开管理评论. 2004(03)<br />
-                        [7] 林强,姜彦福,王德保,冯冠平.  科技创新孵化器的管理模式研究——以深圳清华大学研究院为例[J]. 科学学与科学技术管理. 2003(08)<br />
-                        [8] 林强,姜彦福.  中国科技企业孵化器的发展及新趋势[J]. 科学学研究. 2002(02)
-                        </p>
-                        <div class="title"><h5>评论<span class="nip"></span></h5></div>
+                        <p>This paper focuses on accelerating SELECT queries and describes the considerations in an efficient GPU implemen-tation of the SQLite command processor. Results on an NVIDIA Tesla C1060 achieve speedups of 20-70x depend-ing on the size of the result set. This work is compared to the alternative query platforms developed recently, such as MapReduce implementations, and future avenues of research in GPU data processing are described.</p>
+
+                        <div class="title"><h5>References<span class="nip"></span></h5></div>
+                        <p>[1] N. Bandi, C. Sun, D. Agrawal, and A. El Abbadi. 
+                        Hardware acceleration in commercial databases: a case study of spatial operations. 
+                        In VLDB ’04: Proceedings of the Thirtieth international conference on Very large data bases,
+                        pages 1021–1032. VLDB Endowment, 2004.<br/>
+                        [2] S. Che, M. Boyer, J. Meng, D. Tarjan, J. W. Sheaffer,
+                        and K. Skadron. A performance study of
+                        general-purpose applications on graphics processors
+                        using cuda. J. Parallel Distrib. Comput.,
+                        68(10):1370–1380, 2008.<br/>
+                        [3] J. Dean and S. Ghemawat. Mapreduce: simplified
+                        data processing on large clusters. Commun. ACM,
+                        51(1):107–113, 2008.<br/>
+                        [4] A. di Blas and T. Kaldeway. Data monster: Why
+                        graphics processors will transform database
+                        processing. IEEE Spectrum, September 2009.<br/>
+                        [5] S. Ding, J. He, H. Yan, and T. Suel. Using graphics
+                        processors for high performance IR query processing.
+                        In WWW ’09: Proceedings of the 18th international
+                        conference on World wide web, pages 421–430, New
+                        York, NY, USA, 2009. ACM.<br/>
+                        &hellip;</p>
+
+                        <div class="title"><h5>Comments<span class="nip"></span></h5></div>
                         <textarea style="margin: 1em 0; width: 100%; height: 4em;"></textarea>
                 </div>
            </li>

@@ -83,7 +83,7 @@ function FmTopPanel(manager) {
     this.state = {
         isPrimaryView: true,
         expanded: false,
-        currentTab: '常用'
+        currentTab: 'Favourite'
     };
     this.elements = {
         topbarBtns: "#top .tab .button",
@@ -131,14 +131,12 @@ FmTopPanel.prototype.init = function() {
     this.updateHeight();
     // click entry event
     var additionalClass = {
-        '全部文献': 'all',
-        '最近阅读': 'recent',
-        '好友文献': 'shared' 
+        All: 'all',
+        Recent: 'recent' 
     };
     this.cached.$me.delegate(this.elements.entry, "fmClick", function() {
         that.toggle();
         var tag = $(this).children('h3').html().trim();
-
         that.cached.$primaryTitle.empty()
                                  .append('<span class="tag clickable ' + 
                                             additionalClass[tag] + '">' + 
@@ -147,11 +145,11 @@ FmTopPanel.prototype.init = function() {
     });
     // bottom bar click
     var btn2Tab = {
-        '常用':    $(this.elements.tabs + ' > .fav'),
-        '标签':         $(this.elements.tabs + ' > .tags'),
-        '系统':       $(this.elements.tabs + ' > .system')
+        'Favourite':    $(this.elements.tabs + ' > .fav'),
+        'Tags':         $(this.elements.tabs + ' > .tags'),
+        'System':       $(this.elements.tabs + ' > .system')
     };
-    var currentTab = btn2Tab['常用'];
+    var currentTab = btn2Tab.Favourite;
     var currentBtn = $(this.elements.bottomBtns + '.fav-icon');
     $(this.elements.bottomBtns).click(function(e) {
         // tab
@@ -165,11 +163,11 @@ FmTopPanel.prototype.init = function() {
         currentBtn = $(this);
         currentBtn.addClass('current'); 
         // toggle topbar buttons
-        if(tabName == '常用' || tabName == '系统') {
+        if(tabName == 'Favourite' || tabName == 'System') {
             that.cached.btns.$addTag.hide();
             that.cached.btns.$editTag.hide();
         } 
-        else if(tabName == '标签') {
+        else if(tabName == 'Tags') {
             that.cached.btns.$addTag.show();
             that.cached.btns.$editTag.show();
         }
@@ -249,12 +247,9 @@ function FmMainPanel(manager) {
     // related to search result
     this.elements.$moreEntry = 
         $( '<div class="entry more">' +
-           '<ul class="buttons left">' + 
-               '<li class="button heart-hollow-icon"></li>' + 
-           '</ul>' +
-           '<div class="info"><h4><em>更多</em></h4></div>' + 
-           '<ul class="buttons right">' + 
-               '<li class="button arrow-down-icon"></li>' + 
+           '<div class="info"><h4><em>More</em></h4></div>' + 
+           '<ul class="buttons">' + 
+           '<li class="button arrow-down-icon"></li>' + 
            '</ul>' +
            '</div>' )
     this.resultHtmlBuilder = new FmResultHtmlBuilder();
@@ -644,7 +639,7 @@ function FmWebService() {
     };
 }
 FmWebService.prototype.docsSearch = function(tag, keywords, callback) {
-    var response0 = {
+    var response = {
         id: 1,
         error: null,
         result: {
@@ -673,38 +668,6 @@ FmWebService.prototype.docsSearch = function(tag, keywords, callback) {
             ]
         }
     };
-    var response1 = {
-        id: 1,
-        error: null,
-        result: {
-            sortedBy: "addedOn",
-            total: 3,
-            entries: [
-                {   docId: "1111111",
-                    title: "我国大学科技园最新发展动态、评价及建议——以中关村地区为例",
-                    authors: " 张帏, 成九雁, 高建, 石书德", 
-                    publication: "研究与发展管理",
-                    year: "2009",
-                    addedOn: "Feb 19 2012",
-                    tags: ["大学科技园", "创业"] },
-                {   docId: "2222222",
-                    title: "创业与经济增长关系研究动态综述", 
-                    authors: "邱琼, 高建", 
-                    publication: "外国经济与管理",
-                    year: "2004",  
-                    addedOn: "Feb 19 2012",
-                    tags: ["创业"] },
-                {   docId: "3333333",
-                    title: "斯坦福大学创业教育体系和特点的研究", 
-                    authors: "张帏, 高建", 
-                    publication: "科学学与科学技术管理", 
-                    year: "2006",
-                    addedOn: "Feb 19 2012",
-                    tags: ["创业", "教育"] } 
-            ]
-        }
-    };   
-    var response = response1;
     setTimeout(function() {
         callback(response);
     }, 1000);
@@ -745,25 +708,25 @@ FmResultHtmlBuilder.prototype.decideTimeGroup = function(entry) {
     var date = new Date(Date.parse(entry.addedOn));
     var time = date.getTime();
     if (time >= now - 30*60*1000) {  // within in half an hour
-        return "最新";
+        return "just now";
     }
     else if ( time >= DateConstants.TODAY ) {    // within today
-        return "今天";
+        return "today";
     }
     else if ( time >= DateConstants.YESTERDAY ) {
-        return "昨天";
+        return "yesterday";
     }
     else if ( time >= DateConstants.THIS_WEEK ) {
-        return "本周";
+        return "this week";
     }
     else if ( time >= DateConstants.LAST_WEEK) {
-        return "上周";
+        return "last week";
     }
     else if ( time >= DateConstants.THIS_MONTH ) {
-        return "本月";
+        return "this month";
     }
     else if ( time >= DateConstants.LAST_MONTH ) {
-        return "上月";
+        return "last month";
     }
     else if ( time >= DateConstants.THIS_YEAR ) {    // within this year
         return this.MONTH_STR[date.getMonth()]; 
@@ -775,8 +738,7 @@ FmResultHtmlBuilder.prototype.decideTimeGroup = function(entry) {
 FmResultHtmlBuilder.prototype.toHtml = function(entries) {
     // According to www.learningjquery.com/2009/03/43439-reasons-to-use-append-correct
     // below is the fastest way to insert many HTML elements into DOM
-    var leftBtnHtml = '<ul class="buttons left"><li class="button heart-hollow-icon"></li></ul>';
-    var rightBtnHtml = '<ul class="buttons right"><li class="button arrow-right-icon"></li></ul>';
+    var rightBtnHtml = '<ul class="buttons"><li class="button arrow-right-icon"></li></ul>';
     var htmlToInsert = [];
     var l = entries.length;
     var unselectable = " unselectable=on";
@@ -792,7 +754,6 @@ FmResultHtmlBuilder.prototype.toHtml = function(entries) {
         }
         htmlToInsert.push('<div class="entry clickable' + 
                           (firstInGroup?' first"':'"') + unselectable + '>');
-        htmlToInsert.push(leftBtnHtml);
         htmlToInsert.push('<div class="info"' + unselectable + '>');
         htmlToInsert.push('<h4' + unselectable + '><em' + unselectable + '>' + e.title + '</em></h4>');
         if(e.authors) {
